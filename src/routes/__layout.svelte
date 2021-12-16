@@ -1,7 +1,7 @@
 <script>
 	import Footer from '$components/Footer.svelte';
 	import SideNav from '$components/SideNav.svelte';
-	import '../app.scss';
+	// import '../app.scss';
 	import Nav from '../components/Nav.svelte';
 </script>
 
@@ -19,6 +19,7 @@
 </div>
 
 <style lang="scss">
+
 	:global(#layout-container) {
 		// height: 100vh;
 		// width: 100vw;
