@@ -2,11 +2,15 @@
 	let links = [
 		{ title: 'Home', url: '/' },
 		{ title: 'About', url: '/about' },
+<<<<<<< HEAD
 		{ title: 'Blog', url: '/posts' },
 		{ title: 'Posts endpoint', url: '/posts.json' },
 		{ title: 'Todos', url: '/todos' },
 		{ title: 'Quotes', url: '/quotes' },
 		{ title: 'Creative', url: '/creative' },
+=======
+		{ title: 'Creative', url: '/creative' }
+>>>>>>> domestika/master
 	];
 </script>
 

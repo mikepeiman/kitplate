@@ -1,38 +1,14 @@
-# create-svelte
+# Creative Coding with Bruno Imbrizi
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
+An excellent course, very glad I purchased it and completed it. Well worth my time and money.
 
-## Creating a project
+All my sketches (using the excellent [canvas-sketch](https://github.com/mattdesl/canvas-sketch)) are located in src/routes/ as js files. If you want to work with images, create an 'assets' folder there and replace the image filenames you see in sketch-05.js with your own.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Also added three more files created by fellow student [ddddd](https://www.domestika.org/en/ddddd), as seen in his [final project.](https://www.domestika.org/en/projects/1338175-mi-proyecto-del-curso-codificacion-creativa-crea-piezas-visuales-con-javascript)
 
-```bash
-# create a new project in the current directory
-npm init svelte@next
+## Sveltekit
+I'm in the process of adapting these sketches into Svelte components in a Sveltekit build.
 
-# create a new project in my-app
-npm init svelte@next my-app
-```
+[https://www.domestika.org/en/courses/2729-creative-coding-making-visuals-with-javascript/]( https://www.domestika.org/en/courses/2729-creative-coding-making-visuals-with-javascript/)
 
-> Note: the `@next` is temporary
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-Before creating a production version of your app, install an [adapter](https://kit.svelte.dev/docs#adapters) for your target environment. Then:
-
-```bash
-npm run build
-```
-
-> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
+[My final presentation of work](https://www.domestika.org/en/projects/1340231-creative-coding-final-presentation-of-work)
