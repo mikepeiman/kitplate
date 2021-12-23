@@ -30,12 +30,16 @@
 		console.log(`🚀 ~ file: CanvasSketch.svelte ~ line 26 ~ onMount ~ canvas`, canvas)
 		console.log(`🚀 ~ file: CanvasSketch.svelte ~ line 27 ~ onMount ~ parent`, parent)
 		console.log(`🚀 ~ file: CanvasSketch.svelte ~ line 29 ~ onMount ~ settings`, settings.dimensions);
+		width = settings.dimensions[0]
+		height = settings.dimensions[1]
+		canvas.setAttribute('style', `width: ${width}px; height: ${height}px;`)
 		canvasLoaded = true;
 		// console.log(`🚀 ~ file: CanvasSketch.svelte ~ line 24 ~ onMount ~ opt`, opt)
 		// console.log(`🚀 ~ file: CanvasSketch.svelte ~ line 24 ~ onMount ~ opt.parent`, opt.parent)
 		// console.log(`🚀 ~ file: CanvasSketch.svelte ~ line 26 ~ onMount ~ parent`, parent)
 		loader = await canvasSketch(sketch, opt);
 		manager = await loader;
+
 		fullyLoaded = await manager._settings.canvas
 		canvas.style.width = `${width}px`
 			canvas.style.height= `${height}px`
