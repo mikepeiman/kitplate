@@ -2,7 +2,7 @@ import preprocess from 'svelte-preprocess';
 import path from 'path'
 import { normalizePath } from 'vite'
 import vercel from '@sveltejs/adapter-vercel';
-import adapter from '@sveltejs/adapter-node';
+import node from '@sveltejs/adapter-node';
 import Icons from 'unplugin-icons/vite'
 
 /** @type {import('@sveltejs/kit').Config} */
