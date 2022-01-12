@@ -30,11 +30,11 @@
 		<Footer />
 	</div>
 {:else if path === '/'}
-	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
-		<div class="layout-main flex flex-col -mt-20 items-center jutify-center">
+	<div class="flex items-center jutify-center w-full min-h-screen max-h-full bg-black transition">
+		<div class="flex flex-col w-full items-center jutify-center">
 			<slot />
 		</div>
-		<Footer />
+		<!-- <Footer /> -->
 	</div>
 {:else}
 	<div class="layout-main flex flex-col items-center jutify-center">
