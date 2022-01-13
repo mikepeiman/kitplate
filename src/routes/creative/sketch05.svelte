@@ -32,7 +32,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		(h = c.height = window.innerHeight), (ctx = c.getContext('2d'));
 		// starter.x = w / 2;
 		// starter.y = h / 2;
-		setStartCoords();
+		// setStartCoords();
 		console.log(`🚀 ~ file: sketch05.svelte ~ line 37 ~ w `, w);
 		console.log(`🚀 ~ file: sketch05.svelte ~ line 39 ~ h`, h);
 		window.addEventListener('resize', function () {
@@ -40,7 +40,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			h = c.height = window.innerHeight;
 			// starter.x = w / 2;
 			// starter.y = h / 2;
-			setStartCoords();
+			// setStartCoords();
 			init();
 		});
 		init();
@@ -48,14 +48,16 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	});
 
 	let minDist = 30, // 10, 30
-		maxDist = minDist * 12,
+		maxDist = minDist * 5,
 		initialWidth = 1,
-		maxWidth = 6,
+		minWidth = initialWidth,
+		maxWidth = 4,
 		maxLines = 150, // 100
-		initialLines = 0, // 4
-		speed = 2.5,
+		initialLines = 30, // 4
+		speed = 1.5, // set this high and see what happens... maybe should decouple speed from size of lines
 		lines = [],
 		frame = 0,
+		starter = {},
 		timeSinceLast = 0,
 		oldDirs = [
 			// straight x, y velocity
@@ -76,17 +78,17 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			[-1, 0],
 			[-0.5, -0.866],
 			[0.5, -0.866]
-		],
-		starter = {
-			// starting parent line, just a pseudo line
-			x: w / 2,
-			y: h / 2,
-			vx: 0,
-			vy: 0,
-			width: random.range(initialWidth, maxWidth),
-			reverse: false,
-			dirIndex: 0,
-		};
+		];
+	$: starter = {
+		// starting parent line, just a pseudo line
+		x: random.range(0, w),
+		y: random.range(0, h),
+		vx: 0,
+		vy: 0,
+		width: random.range(initialWidth, maxWidth),
+		reverse: false,
+		dirIndex: 0
+	};
 
 	function setStartCoords() {
 		// Math.random() < 0.5 ? (starter.x = 0) : (starter.x = w);
@@ -99,8 +101,10 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 	function init() {
 		lines.length = 0;
-
-		for (let i = 0; i < initialLines; ++i) lines.push(new Line(starter));
+		for (let i = 0; i < initialLines; ++i) {
+			setStartCoords();
+			lines.push(new Line(starter));
+		}
 
 		ctx.fillStyle = '#222';
 		ctx.fillRect(0, 0, w, h);
@@ -152,14 +156,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			setStartCoords();
 			let line = new Line(starter);
 			let randomDir = (Math.random() * dirs.length) | 0;
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 155 ~ anim ~ randomDir`, randomDir)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 155 ~ anim ~ randomDir`, randomDir)
 			let dir = dirs[randomDir];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 155 ~ anim ~ dir`, dir)
 			line.dirIndex = randomDir;
 			lines.push(line);
 
 			// cover the middle;
-			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y);
+			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y, Math.random());
 			ctx.beginPath();
 			// ctx.arc(starter.x, starter.y, initialWidth / 4, 0, Math.PI * 2);
 			// ctx.fill();
@@ -177,7 +181,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		do {
 			let dir = dirs[(Math.random() * dirs.length) | 0];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
-			this.dirIndex++
+			this.dirIndex++;
 			// let dir = dirs[this.dirIndex % 6];
 			this.vx = dir[0];
 			this.vy = dir[1];
@@ -196,8 +200,11 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.vy *= speed;
 
 		// this.dist = Math.random() * (maxDist - minDist) + minDist;
-		this.lineDist = minDist;
-		this.hexDist = maxDist;
+		// this.lineDist = minDist;
+		// this.hexDist = maxDist;
+		// the following factor with random applies some kind of grouping to initial forms
+		this.lineDist = minDist * Math.random() * 10;
+		this.hexDist = maxDist * Math.random() * 10;
 	}
 
 	Line.prototype.wrap = function () {
@@ -243,24 +250,24 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		// if (this.dist <= 0 && this.width > initialWidth) {
 		if (this.lineDist <= 0) {
 			// let dir = dirs[(Math.random() * dirs.length) | 0];
-			this.dirIndex++
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 243 ~ anim ~ this.dirIndex`, this.dirIndex)
+			this.dirIndex++;
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 243 ~ anim ~ this.dirIndex`, this.dirIndex)
 			let dir = dirs[this.dirIndex % 6];
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 245 ~ anim ~ this.dirIndex % 6`, this.dirIndex % 6)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 245 ~ anim ~ this.dirIndex % 6`, this.dirIndex % 6)
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			// let newRand = random.range(0.5, 1.5);
 			// this.vx = dir[0]* speed * newRand;
 			// this.vy = dir[1]* speed * newRand;
-			this.vx = dir[0]* speed ;
-			this.vy = dir[1]* speed ;
+			this.vx = dir[0] * speed;
+			this.vy = dir[1] * speed;
 			// this.vx = dirs[this.dirx % dirs.length] * speed;
 			// this.vy = dirs[this.diry % dirs.length] * speed;
 			// keep yo self, sometimes
 			// this.dist = Math.random() * (maxDist - minDist) + minDist;
 			// this.dist = random.range(minDist, maxDist) + minDist;
 			// looking for consistent hexagons
-			this.lineDist = minDist;
-
+			// this.lineDist = minDist;
+			this.lineDist = (minDist * Math.random()) * 2;
 			// add 2 children
 			if (lines.length < maxLines) lines.push(new Line(this));
 			if (lines.length < maxLines * 1 && Math.random() < 0.5) lines.push(new Line(this));
@@ -273,13 +280,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		let velFactor;
 		//  velFactor = ((this.vx * this.vy) + 1) * .5;
 		//  velFactor = this.vx * this.vy;
-		 velFactor = this.vx + this.vy;
-		//  velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
+		// velFactor = this.vx + this.vy + this.x + this.y;
+		 velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
 		//  velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		// velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		//  velFactor = this.vx - this.vy * this.vx;
 		//  velFactor = this.vx * this.vy * this.vy;
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, 1);
+		this.width += velFactor / 3;
+		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, velFactor);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		ctx.moveTo(this.x, this.y);
@@ -290,9 +298,11 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		// }
 		if (this.width > maxWidth) {
 			this.reverse = true;
+		} else if (this.width < minWidth) {
+			this.reverse = false;
 		}
-		if(this.hexDist <= 0){
-			dead = true
+		if (this.hexDist <= 0) {
+			dead = true;
 		}
 		if (dead) return true;
 	};
