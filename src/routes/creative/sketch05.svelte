@@ -47,14 +47,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		anim();
 	});
 
-	let minDist = 160, // 10, 30
+	let minDist = 60, // 10, 30
 		maxDist = minDist * 1.2,
 		initialWidth = 1,
 		minWidth = initialWidth,
-		maxWidth = 4,
-		maxLines = 335, // 100
-		initialLines = 5, // 4
-		speed = 10, // set this high and see what happens... maybe should decouple speed from size of lines
+		maxWidth = 5,
+		maxLines = 175, // 100
+		initialLines = 125, // 4
+		speed = 2.25, // set this high and see what happens... maybe should decouple speed from size of lines
 		lines = [],
 		frame = 0,
 		starter = {},
@@ -87,14 +87,15 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		vy: 0,
 		width: random.range(initialWidth, maxWidth),
 		reverse: false,
-		dirIndex: 0
+		dirIndex: 3,
+		randomFactor: random.range(0.1, 1)
 	};
 
 	function setStartCoords() {
 		// Math.random() < 0.5 ? (starter.x = 0) : (starter.x = w);
 		starter.x = random.range(0, w);
 		starter.y = random.range(0, h);
-
+		// starter.randomFactor = random.range(0.5, 1.5);
 		// starter.x = w / 2;
 		// starter.y = h / 2;
 	}
@@ -114,8 +115,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	}
 
 	function getColor(x, y, alphaFactor) {
+        // console.log(`🚀 ~ file: sketch05.svelte ~ line 117 ~ getColor ~ alphaFactor`, alphaFactor)
+		let finalFactor
+		// finalFactor = y / h + frame * alphaFactor
+		finalFactor = alphaFactor - Math.floor(alphaFactor)
+        // console.log(`🚀 ~ file: sketch05.svelte ~ line 119 ~ getColor ~ finalFactor`, finalFactor)
 		// return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
-		return `hsla( ${((x / w) * 180 + frame + 5 * random.range(-1,1)) % 180 -  120}, 80%, 50%, ${y / h + frame * Math.random() * alphaFactor} )`;
+		// return `hsla( ${((x / w) * 180 + frame + 5 * random.range(-1,1)) % 180 -  120}, 80%, 50%, ${y / h + frame * Math.random() * alphaFactor} )`;
+		return `hsla( ${(x / w) * 180 + frame -  120}, 80%, 50%, ${finalFactor} )`;
 	}
 
 	function anim() {
@@ -132,7 +139,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		for (let i = 0; i < lines.length; ++i) {
 			// lines[i].bounce()
 			// lines[i].width *= 0.995;
-			lines[i].reverse ? (lines[i].width *= 0.995) : (lines[i].width *= 1.005);
+			lines[i].reverse ? (lines[i].width *= 0.998) : (lines[i].width *= 1.002);
 			// lines.splice(i, 1);
 			// --i;
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 125 ~ anim ~ lines[i]`, lines[i])
@@ -149,8 +156,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 		++timeSinceLast;
 
-		// if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
-		if (lines.length < maxLines) {
+		if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
+		// if (lines.length < maxLines) {
 			// && timesincelast > 10
 			timeSinceLast = 0;
 			setStartCoords();
@@ -160,6 +167,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			let dir = dirs[randomDir];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 155 ~ anim ~ dir`, dir)
 			line.dirIndex = randomDir;
+			// line.randomFactor = random.range(0.5, 1.5);
 			lines.push(line);
 
 			// cover the middle;
@@ -178,13 +186,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.width = random.range(initialWidth, maxWidth);
 		this.reverse = false;
 		this.dirIndex = parent.dirIndex + 1;
+		this.randomFactor = random.range(0.1, 1);
 		do {
 			let dir = dirs[(Math.random() * dirs.length) | 0];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			this.dirIndex++;
 			// let dir = dirs[this.dirIndex % 6];
-			this.vx = dir[0];
-			this.vy = dir[1];
+			this.vx = dir[0] * speed * this.randomFactor;
+			this.vy = dir[1] * speed * this.randomFactor;
 			// if (this.x <= 0 || this.x >= w) {
 			// 	this.vx *= -1;
 			// }
@@ -196,8 +205,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			(this.vx === parent.vx && this.vy === parent.vy)
 		);
 
-		this.vx *= speed;
-		this.vy *= speed;
+		// this.vx *= speed;
+		// this.vy *= speed;
 
 		// this.dist = Math.random() * (maxDist - minDist) + minDist;
 		this.lineDist = minDist;
@@ -229,8 +238,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.x += this.vx;
 		this.y += this.vy;
 
-		this.lineDist -= 1 * speed;
-		this.hexDist -= 1 * speed;
+		this.lineDist -= 1 * speed * this.randomFactor;
+		this.hexDist -= 1 * speed * this.randomFactor;
 		// this.x = (this.x + w) % w;
 		// this.y = (this.y + h) % h;
 		// kill if out of screen
@@ -240,17 +249,20 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		// make children :D
 		// if (this.dist <= 0 && this.width > initialWidth) {
 		if (this.lineDist <= 0) {
-			// let dir = dirs[(Math.random() * dirs.length) | 0];
-			this.dirIndex++;
+			let dir
+			// dir = dirs[(Math.random() * dirs.length) | 0];
+			// this.dirIndex ++
+			Math.random > 0.5 && this.dirIndex >= 1 ? this.dirIndex-- : this.dirIndex++;
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 243 ~ anim ~ this.dirIndex`, this.dirIndex)
-			let dir = dirs[this.dirIndex % 6];
+			dir = dirs[this.dirIndex % 6];
+			// Math.random > 0.25 ? dir = dirs[(this.dirIndex) % 6] : dir = dirs[(this.dirIndex - 1) % 6];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 245 ~ anim ~ this.dirIndex % 6`, this.dirIndex % 6)
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			// let newRand = random.range(0.5, 1.5);
 			// this.vx = dir[0]* speed * newRand;
 			// this.vy = dir[1]* speed * newRand;
-			this.vx = dir[0] * speed;
-			this.vy = dir[1] * speed;
+			this.vx = dir[0] * speed * this.randomFactor;
+			this.vy = dir[1] * speed * this.randomFactor;
 			// this.vx = dirs[this.dirx % dirs.length] * speed;
 			// this.vy = dirs[this.diry % dirs.length] * speed;
 			// keep yo self, sometimes
@@ -261,7 +273,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			this.lineDist = (minDist * Math.random()) * 2;
 			// add 2 children
 			if (lines.length < maxLines) lines.push(new Line(this));
-			if (lines.length < maxLines * 1 && Math.random() < 0.5) lines.push(new Line(this));
+			if (lines.length < maxLines * 2 && Math.random() < 0.5) lines.push(new Line(this));
 			// adjust first maxLines condition above 1 to create a pause in emitter while lines diminish
 
 			// kill the poor thing
@@ -280,7 +292,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.width > maxWidth / 2 ? velFactor = this.width / 5 :velFactor = this.width * 5; // this is pretty slick, all angles used
 		// this.width += velFactor / 3;
 		// this.width += velFactor / 3;
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, velFactor);
+		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, this.randomFactor);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		ctx.moveTo(this.x, this.y);
