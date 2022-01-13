@@ -70,8 +70,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		],
 		lineWidth: 2,
 		lineWidthMax: 5,
-		radiusMin: 10,
-		radiusMax: 30,
+		radiusMin: 1,
+		radiusMax: 3,
 		animate: true
 	};
 	$: data;
@@ -100,7 +100,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			this.vel = new Vector(parseFloat(angles[this.angle].x), parseFloat(angles[this.angle].y));
             console.log(`🚀 ~ file: sketch04.svelte ~ line 101 ~ Agent ~ constructor ~ this.vel`, this.vel)
 			this.radius = random.range(data.radiusMin, data.radiusMax);
-			this.remainingTravel = this.radius;
+			this.sideLength = 20
+			this.remainingTravel = this.sideLength;
 			// console.log(`🚀 ~ file: sketch04.svelte ~ line 90 ~ Agent ~ constructor ~ this.angle`, this.angle)
 		}
 		update(i) {
@@ -126,7 +127,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			if (this.remainingTravel <= 0) {
 				// this.vel.x = random.range(-1, 1);
 				// this.vel.y = random.range(-1, 1);
-				this.remainingTravel = this.radius;
+				this.remainingTravel = this.sideLength;
 				let angle = Math.floor(random.range(-2,2));
                 // console.log(`🚀 ~ file: sketch04.svelte ~ line 129 ~ Agent ~ update ~ this.remainingTravel`, this.remainingTravel)
 				this.angle = makePositive(this.angle + angle) % 6;
