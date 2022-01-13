@@ -47,11 +47,12 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		anim();
 	});
 	let minDist = 30, // 10, 30
-		maxDist = 90,
-		initialWidth = 8,
+		maxDist = 190,
+		initialWidth = 1,
+		maxWidth =12,
 		maxLines = 150, // 100
 		initialLines = 0, // 4
-		speed = 1.5,
+		speed = 2.5,
 		lines = [],
 		frame = 0,
 		timeSinceLast = 0,
@@ -122,8 +123,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 124 ~ anim ~ lines`, lines)
 		for (var i = 0; i < lines.length; ++i) {
-			lines[i].bounce()
-			
+			// lines[i].bounce()
+			// lines[i].width *= 0.995;
+			lines[i].reverse ?  lines[i].width *= .995 : lines[i].width *= 1.005;
 			// lines.splice(i, 1);
 				// --i;
             // console.log(`🚀 ~ file: sketch05.svelte ~ line 125 ~ anim ~ lines[i]`, lines[i])
@@ -140,7 +142,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 		++timeSinceLast;
 
-		if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
+		// if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
+		if (lines.length < maxLines){
+			// && timesincelast > 10
 			timeSinceLast = 0;
 			setStartCoords();
 			lines.push(new Line(starter));
@@ -148,18 +152,20 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// cover the middle;
 			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y);
 			ctx.beginPath();
-			ctx.arc(starter.x, starter.y, initialWidth, 0, Math.PI * 2);
-			ctx.fill();
+			// ctx.arc(starter.x, starter.y, initialWidth / 4, 0, Math.PI * 2);
+			// ctx.fill();
 		}
 	}
 
 	function Line(parent) {
 		this.x = parent.x | 0;
 		this.y = parent.y | 0;
-		this.width = parent.width / 1.25;
+		// this.width = parent.width / 1.25;
+		this.width = parent.width
 
 		do {
 			var dir = dirs[(Math.random() * dirs.length) | 0];
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			this.vx = dir[0];
 			this.vy = dir[1];
 			// if (this.x <= 0 || this.x >= w) {
@@ -187,21 +193,19 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 	Line.prototype.bounce = function () {
 		if (this.x <= 0 || this.x >= w) {
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ w`, w)
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x`, this.x)
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x >= w`, this.x >= w)
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x <= 0`, this.x <= 0)
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ w`, w)
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x`, this.x)
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x >= w`, this.x >= w)
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x <= 0`, this.x <= 0)
 			
 			this.vx *= -1;
-			this.vy *= -1;
 		}
 		if (this.y <= 0 || this.y >= h) {
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ h`, h)
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y `, this.y )
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y >= h`, this.y >= h)
-            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y <= 0`, this.y <= 0)
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ h`, h)
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y `, this.y )
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y >= h`, this.y >= h)
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y <= 0`, this.y <= 0)
 			this.vy *= -1;
-			this.vx *= -1;
 		}
 	};
 	Line.prototype.step = function () {
@@ -217,10 +221,16 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		// this.x = (this.x + w) % w;
 		// this.y = (this.y + h) % h;
 		// kill if out of screen
-		if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) dead = true;
+		if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.bounce()
+		//  dead = true;
 
 		// make children :D
-		if (this.dist <= 0 && this.width > 1) {
+		// if (this.dist <= 0 && this.width > initialWidth) {
+		if (this.dist <= 0) {
+			var dir = dirs[(Math.random() * dirs.length) | 0];
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
+			this.vx = dir[0] * speed * random.range(0.5, 1.5);
+			this.vy = dir[1] * speed * random.range(0.5, 1.5);
 			// keep yo self, sometimes
 			this.dist = Math.random() * (maxDist - minDist) + minDist;
 
@@ -240,7 +250,12 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		ctx.moveTo(this.x, this.y);
 		ctx.lineTo(prevX, prevY);
 		ctx.stroke();
-
+		if( this.width < initialWidth){
+			dead = true
+		}
+		if( this.width > maxWidth){
+			this.reverse = true
+		}
 		if (dead) return true;
 	};
 
