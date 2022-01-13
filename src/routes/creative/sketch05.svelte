@@ -33,13 +33,13 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		anim();
 
 		window.addEventListener('resize', function () {
-		w = c.width = window.innerWidth;
-		h = c.height = window.innerHeight;
-		starter.x = w / 2;
-		starter.y = h / 2;
+			w = c.width = window.innerWidth;
+			h = c.height = window.innerHeight;
+			starter.x = w / 2;
+			starter.y = h / 2;
 
-		init();
-	});
+			init();
+		});
 	});
 	let minDist = 10,
 		maxDist = 30,
@@ -50,7 +50,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		lines = [],
 		frame = 0,
 		timeSinceLast = 0,
-		dirs = [
+		oldDirs = [
 			// straight x, y velocity
 			[0, 1],
 			[1, 0],
@@ -62,15 +62,23 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			[-0.7, 0.7],
 			[-0.7, -0.7]
 		],
-		starter = {
-			// starting parent line, just a pseudo line
+		dirs = [
+			[1, 0],
+			[0.5, 0.866],
+			[-0.5, 0.866],
+			[1, 0],
+			[-0.5, -0.866],
+			[0.5, -0.866]
+		],
+	starter = {
+		// starting parent line, just a pseudo line
 
-			x: w / 2,
-			y: h / 2,
-			vx: 0,
-			vy: 0,
-			width: initialWidth
-		};
+		x: w / 2,
+		y: h / 2,
+		vx: 0,
+		vy: 0,
+		width: initialWidth
+	};
 
 	function init() {
 		lines.length = 0;
@@ -176,8 +184,6 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 		if (dead) return true;
 	};
-
-
 
 	const sketch = ({}) => {
 		return ({ context, width, height }) => {
