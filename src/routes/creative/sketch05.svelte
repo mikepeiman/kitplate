@@ -46,10 +46,11 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		init();
 		anim();
 	});
+
 	let minDist = 30, // 10, 30
-		maxDist = 190,
+		maxDist = minDist * 12,
 		initialWidth = 1,
-		maxWidth =6,
+		maxWidth = 6,
 		maxLines = 150, // 100
 		initialLines = 0, // 4
 		speed = 2.5,
@@ -83,7 +84,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			vx: 0,
 			vy: 0,
 			width: random.range(initialWidth, maxWidth),
-			reverse: false
+			reverse: false,
+			dirIndex: 0,
 		};
 
 	function setStartCoords() {
@@ -98,7 +100,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	function init() {
 		lines.length = 0;
 
-		for (var i = 0; i < initialLines; ++i) lines.push(new Line(starter));
+		for (let i = 0; i < initialLines; ++i) lines.push(new Line(starter));
 
 		ctx.fillStyle = '#222';
 		ctx.fillRect(0, 0, w, h);
@@ -123,13 +125,13 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		ctx.shadowBlur = 0.5;
 
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 124 ~ anim ~ lines`, lines)
-		for (var i = 0; i < lines.length; ++i) {
+		for (let i = 0; i < lines.length; ++i) {
 			// lines[i].bounce()
 			// lines[i].width *= 0.995;
-			lines[i].reverse ?  lines[i].width *= .995 : lines[i].width *= 1.005;
+			lines[i].reverse ? (lines[i].width *= 0.995) : (lines[i].width *= 1.005);
 			// lines.splice(i, 1);
-				// --i;
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 125 ~ anim ~ lines[i]`, lines[i])
+			// --i;
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 125 ~ anim ~ lines[i]`, lines[i])
 			if (lines[i].step()) {
 				// if true it's dead
 
@@ -144,11 +146,17 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		++timeSinceLast;
 
 		// if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
-		if (lines.length < maxLines){
+		if (lines.length < maxLines) {
 			// && timesincelast > 10
 			timeSinceLast = 0;
 			setStartCoords();
-			lines.push(new Line(starter));
+			let line = new Line(starter);
+			let randomDir = (Math.random() * dirs.length) | 0;
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 155 ~ anim ~ randomDir`, randomDir)
+			let dir = dirs[randomDir];
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 155 ~ anim ~ dir`, dir)
+			line.dirIndex = randomDir;
+			lines.push(line);
 
 			// cover the middle;
 			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y);
@@ -163,12 +171,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.y = parent.y | 0;
 		// this.width = parent.width / 1.25;
 		// this.width = parent.width
-		this.width = random.range(initialWidth, maxWidth)
-		this.reverse = false
-
+		this.width = random.range(initialWidth, maxWidth);
+		this.reverse = false;
+		this.dirIndex = parent.dirIndex + 1;
 		do {
-			var dir = dirs[(Math.random() * dirs.length) | 0];
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
+			let dir = dirs[(Math.random() * dirs.length) | 0];
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
+			this.dirIndex++
+			// let dir = dirs[this.dirIndex % 6];
 			this.vx = dir[0];
 			this.vy = dir[1];
 			// if (this.x <= 0 || this.x >= w) {
@@ -177,7 +187,6 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// if (this.y <= 0 || this.y >= h) {
 			// 	this.vy *= -1;
 			// }
-
 		} while (
 			(this.vx === -parent.vx && this.vy === -parent.vy) ||
 			(this.vx === parent.vx && this.vy === parent.vy)
@@ -186,7 +195,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.vx *= speed;
 		this.vy *= speed;
 
-		this.dist = Math.random() * (maxDist - minDist) + minDist;
+		// this.dist = Math.random() * (maxDist - minDist) + minDist;
+		this.lineDist = minDist;
+		this.hexDist = maxDist;
 	}
 
 	Line.prototype.wrap = function () {
@@ -196,47 +207,59 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 	Line.prototype.bounce = function () {
 		if (this.x <= 0 || this.x >= w) {
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ w`, w)
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x`, this.x)
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x >= w`, this.x >= w)
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x <= 0`, this.x <= 0)
-			
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ w`, w)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x`, this.x)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x >= w`, this.x >= w)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x <= 0`, this.x <= 0)
+
 			this.vx *= -1;
 		}
 		if (this.y <= 0 || this.y >= h) {
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ h`, h)
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y `, this.y )
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y >= h`, this.y >= h)
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y <= 0`, this.y <= 0)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ h`, h)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y `, this.y )
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y >= h`, this.y >= h)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y <= 0`, this.y <= 0)
 			this.vy *= -1;
 		}
 	};
 	Line.prototype.step = function () {
-		var dead = false;
+		let dead = false;
 
-		var prevX = this.x,
+		let prevX = this.x,
 			prevY = this.y;
 
 		this.x += this.vx;
 		this.y += this.vy;
 
-		--this.dist;
+		--this.lineDist;
+		--this.hexDist;
 		// this.x = (this.x + w) % w;
 		// this.y = (this.y + h) % h;
 		// kill if out of screen
-		if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.bounce()
+		if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.bounce();
 		//  dead = true;
 
 		// make children :D
 		// if (this.dist <= 0 && this.width > initialWidth) {
-		if (this.dist <= 0) {
-			var dir = dirs[(Math.random() * dirs.length) | 0];
-            // console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
-			let newRand = random.range(0.5, 1.5);
-			this.vx = dir[0] * speed * newRand
-			this.vy = dir[1] * speed * newRand
+		if (this.lineDist <= 0) {
+			// let dir = dirs[(Math.random() * dirs.length) | 0];
+			this.dirIndex++
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 243 ~ anim ~ this.dirIndex`, this.dirIndex)
+			let dir = dirs[this.dirIndex % 6];
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 245 ~ anim ~ this.dirIndex % 6`, this.dirIndex % 6)
+			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
+			// let newRand = random.range(0.5, 1.5);
+			// this.vx = dir[0]* speed * newRand;
+			// this.vy = dir[1]* speed * newRand;
+			this.vx = dir[0]* speed ;
+			this.vy = dir[1]* speed ;
+			// this.vx = dirs[this.dirx % dirs.length] * speed;
+			// this.vy = dirs[this.diry % dirs.length] * speed;
 			// keep yo self, sometimes
-			this.dist = Math.random() * (maxDist - minDist) + minDist;
+			// this.dist = Math.random() * (maxDist - minDist) + minDist;
+			// this.dist = random.range(minDist, maxDist) + minDist;
+			// looking for consistent hexagons
+			this.lineDist = minDist;
 
 			// add 2 children
 			if (lines.length < maxLines) lines.push(new Line(this));
@@ -247,26 +270,29 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// if (Math.random() < 0.5) dead = true;
 			// dead = true;
 		}
-		let velFactor
+		let velFactor;
 		//  velFactor = ((this.vx * this.vy) + 1) * .5;
 		//  velFactor = this.vx * this.vy;
-		//  velFactor = this.vx + this.vy;
+		 velFactor = this.vx + this.vy;
 		//  velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
-		//  velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
-		 velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
+		//  velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
+		// velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		//  velFactor = this.vx - this.vy * this.vx;
 		//  velFactor = this.vx * this.vy * this.vy;
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, velFactor);
+		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, 1);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		ctx.moveTo(this.x, this.y);
 		ctx.lineTo(prevX, prevY);
 		ctx.stroke();
-		if( this.width < initialWidth){
-			dead = true
+		// if (this.width < initialWidth) {
+		// 	dead = true;
+		// }
+		if (this.width > maxWidth) {
+			this.reverse = true;
 		}
-		if( this.width > maxWidth){
-			this.reverse = true
+		if(this.hexDist <= 0){
+			dead = true
 		}
 		if (dead) return true;
 	};
