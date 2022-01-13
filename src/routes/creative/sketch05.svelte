@@ -29,9 +29,10 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		c = document.getElementById('c');
 		w = c.width = window.innerWidth;
 		(h = c.height = window.innerHeight), (ctx = c.getContext('2d'));
-		init();
-		anim();
-
+		starter.x = w / 2;
+		starter.y = h / 2;
+		console.log(`🚀 ~ file: sketch05.svelte ~ line 37 ~ w `, w )
+		console.log(`🚀 ~ file: sketch05.svelte ~ line 39 ~ h`, h)
 		window.addEventListener('resize', function () {
 			w = c.width = window.innerWidth;
 			h = c.height = window.innerHeight;
@@ -40,12 +41,15 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 			init();
 		});
+		init();
+		anim();
+
 	});
-	let minDist = 10,
-		maxDist = 30,
-		initialWidth = 10,
-		maxLines = 100,
-		initialLines = 4,
+	let minDist = 3, // 10, 30
+		maxDist = 9,
+		initialWidth = 2,
+		maxLines = 500, // 100
+		initialLines = 120, // 4
 		speed = 5,
 		lines = [],
 		frame = 0,
@@ -66,7 +70,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			[1, 0],
 			[0.5, 0.866],
 			[-0.5, 0.866],
-			[1, 0],
+			[-1, 0],
 			[-0.5, -0.866],
 			[0.5, -0.866]
 		],
@@ -91,9 +95,13 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		// if you want a cookie ;)
 		// ctx.lineCap = 'round';
 	}
+
+
 	function getColor(x) {
 		return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
 	}
+
+
 	function anim() {
 		window.requestAnimationFrame(anim);
 
@@ -204,7 +212,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	};
 </script>
 
-<canvas id="c" />
+<canvas id="c" class="w-full h-full" />
 
 <!-- <CanvasSketchEditor {sketch} {settings} {data} {hidePanel}>
 	<ColorInput label='Background' bind:value={data.background} />
