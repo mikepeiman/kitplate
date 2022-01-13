@@ -228,8 +228,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	// let counter = 0
 	const animate = () => {
 		console.log(`Mike animate ${counter++}`);
-		sketch({ context, width, height });
 		requestAnimationFrame(animate);
+		sketch({ context, width, height });
 	};
 	//
 </script>
