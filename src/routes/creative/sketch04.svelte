@@ -112,14 +112,25 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// if(this.angle === 0) {
 			// }
 			// this.remainingTravel -= largest(travelX, travelY);
-			this.remainingTravel -= largest(this.vel.x, this.vel.y);
+			this.remainingTravel -= makePositive(largest(this.vel.x, this.vel.y));
 			// if (this.remainingTravel <= 0 || travelX === 0 || travelY === 0) {
-			if (this.remainingTravel <= 0 || this.vel.x === 0 || this.vel.y === 0) {
+			if (this.remainingTravel <= 0) {
 				// this.vel.x = random.range(-1, 1);
 				// this.vel.y = random.range(-1, 1);
+				if(i===0) {
+					this.remainingTravel
+					this.vel
+					largest(this.vel.x, this.vel.y)
+                    console.log(`🚀 ~ file: sketch04.svelte ~ line 124 ~ Agent ~ update ~ largest(this.vel.x, this.vel.y)`, largest(this.vel.x, this.vel.y))
+                    console.log(`🚀 ~ file: sketch04.svelte ~ line 123 ~ Agent ~ update ~ this.vel`, this.vel)
+                    console.log(`🚀 ~ file: sketch04.svelte ~ line 122 ~ Agent ~ update ~ this.remainingTravel`, this.remainingTravel)
+				}
 				this.remainingTravel = this.radius;
+                console.log(`🚀 ~ file: sketch04.svelte ~ line 129 ~ Agent ~ update ~ this.remainingTravel`, this.remainingTravel)
 				this.angle = Math.floor(random.range(0, 6));
+                console.log(`🚀 ~ file: sketch04.svelte ~ line 131 ~ Agent ~ update ~ this.angle`, this.angle)
 				this.vel = new Vector(parseFloat(angles[this.angle].x), parseFloat(angles[this.angle].y));
+                console.log(`🚀 ~ file: sketch04.svelte ~ line 133 ~ Agent ~ update ~ this.vel`, this.vel)
 			}
 			// this.pos.x += travelX;
 			// this.pos.y += travelY;
