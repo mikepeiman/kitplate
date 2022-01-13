@@ -47,14 +47,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		anim();
 	});
 
-	let minDist = 30, // 10, 30
-		maxDist = minDist * 5,
+	let minDist = 160, // 10, 30
+		maxDist = minDist * 1.2,
 		initialWidth = 1,
 		minWidth = initialWidth,
 		maxWidth = 4,
-		maxLines = 150, // 100
-		initialLines = 30, // 4
-		speed = 1.5, // set this high and see what happens... maybe should decouple speed from size of lines
+		maxLines = 335, // 100
+		initialLines = 5, // 4
+		speed = 10, // set this high and see what happens... maybe should decouple speed from size of lines
 		lines = [],
 		frame = 0,
 		starter = {},
@@ -115,7 +115,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 	function getColor(x, y, alphaFactor) {
 		// return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
-		return `hsla( ${(x / w) * 360 + frame}, 80%, 50%, ${y / h + frame * alphaFactor} )`;
+		return `hsla( ${((x / w) * 180 + frame + 5 * random.range(-1,1)) % 180 -  120}, 80%, 50%, ${y / h + frame * Math.random() * alphaFactor} )`;
 	}
 
 	function anim() {
@@ -200,11 +200,11 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.vy *= speed;
 
 		// this.dist = Math.random() * (maxDist - minDist) + minDist;
-		// this.lineDist = minDist;
-		// this.hexDist = maxDist;
-		// the following factor with random applies some kind of grouping to initial forms
-		this.lineDist = minDist * Math.random() * 10;
-		this.hexDist = maxDist * Math.random() * 10;
+		this.lineDist = minDist;
+		this.hexDist = maxDist;
+
+		// this.lineDist = minDist * Math.random() * 10;
+		// this.hexDist = maxDist * Math.random() * 10;
 	}
 
 	Line.prototype.wrap = function () {
@@ -214,18 +214,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 	Line.prototype.bounce = function () {
 		if (this.x <= 0 || this.x >= w) {
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ w`, w)
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x`, this.x)
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x >= w`, this.x >= w)
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x <= 0`, this.x <= 0)
-
 			this.vx *= -1;
 		}
 		if (this.y <= 0 || this.y >= h) {
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ h`, h)
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y `, this.y )
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y >= h`, this.y >= h)
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y <= 0`, this.y <= 0)
 			this.vy *= -1;
 		}
 	};
@@ -238,8 +229,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.x += this.vx;
 		this.y += this.vy;
 
-		--this.lineDist;
-		--this.hexDist;
+		this.lineDist -= 1 * speed;
+		this.hexDist -= 1 * speed;
 		// this.x = (this.x + w) % w;
 		// this.y = (this.y + h) % h;
 		// kill if out of screen
@@ -277,16 +268,18 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// if (Math.random() < 0.5) dead = true;
 			// dead = true;
 		}
-		let velFactor;
+		let velFactor = 1;
 		//  velFactor = ((this.vx * this.vy) + 1) * .5;
 		//  velFactor = this.vx * this.vy;
 		// velFactor = this.vx + this.vy + this.x + this.y;
-		 velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
+		//  velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
 		//  velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		// velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx;
-		//  velFactor = this.vx - this.vy * this.vx;
-		//  velFactor = this.vx * this.vy * this.vy;
-		this.width += velFactor / 3;
+		//  velFactor = this.vx - this.vy * this.vx; // this one does up-right, minimal effect
+		//  velFactor = this.vx * this.vy * this.vy; // this one does bridges up left down, a bit messy?
+		this.width > maxWidth / 2 ? velFactor = this.width / 5 :velFactor = this.width * 5; // this is pretty slick, all angles used
+		// this.width += velFactor / 3;
+		// this.width += velFactor / 3;
 		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, velFactor);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
