@@ -9,6 +9,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	import ColorInput from '$components/ColorInput.svelte';
 	import Checkbox from '$components/Checkbox.svelte';
 	import { onMount } from 'svelte';
+	import random from 'canvas-sketch-util/random.js';
 	const data = {
 		TITLE: 'Sketch05',
 		outline: true,
@@ -29,28 +30,28 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		c = document.getElementById('c');
 		w = c.width = window.innerWidth;
 		(h = c.height = window.innerHeight), (ctx = c.getContext('2d'));
-		starter.x = w / 2;
-		starter.y = h / 2;
-		console.log(`🚀 ~ file: sketch05.svelte ~ line 37 ~ w `, w )
-		console.log(`🚀 ~ file: sketch05.svelte ~ line 39 ~ h`, h)
+		// starter.x = w / 2;
+		// starter.y = h / 2;
+		setStartCoords();
+		console.log(`🚀 ~ file: sketch05.svelte ~ line 37 ~ w `, w);
+		console.log(`🚀 ~ file: sketch05.svelte ~ line 39 ~ h`, h);
 		window.addEventListener('resize', function () {
 			w = c.width = window.innerWidth;
 			h = c.height = window.innerHeight;
-			starter.x = w / 2;
-			starter.y = h / 2;
-
+			// starter.x = w / 2;
+			// starter.y = h / 2;
+			setStartCoords();
 			init();
 		});
 		init();
 		anim();
-
 	});
-	let minDist = 3, // 10, 30
-		maxDist = 9,
-		initialWidth = 2,
-		maxLines = 500, // 100
-		initialLines = 120, // 4
-		speed = 5,
+	let minDist = 30, // 10, 30
+		maxDist = 90,
+		initialWidth = 8,
+		maxLines = 150, // 100
+		initialLines = 0, // 4
+		speed = 1.5,
 		lines = [],
 		frame = 0,
 		timeSinceLast = 0,
@@ -74,15 +75,23 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			[-0.5, -0.866],
 			[0.5, -0.866]
 		],
-	starter = {
-		// starting parent line, just a pseudo line
+		starter = {
+			// starting parent line, just a pseudo line
+			x: w / 2,
+			y: h / 2,
+			vx: 0,
+			vy: 0,
+			width: initialWidth
+		};
 
-		x: w / 2,
-		y: h / 2,
-		vx: 0,
-		vy: 0,
-		width: initialWidth
-	};
+	function setStartCoords() {
+		// Math.random() < 0.5 ? (starter.x = 0) : (starter.x = w);
+		starter.x = random.range(0, w);
+		starter.y = random.range(0, h);
+
+		// starter.x = w / 2;
+		// starter.y = h / 2;
+	}
 
 	function init() {
 		lines.length = 0;
@@ -93,14 +102,13 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		ctx.fillRect(0, 0, w, h);
 
 		// if you want a cookie ;)
-		// ctx.lineCap = 'round';
+		ctx.lineCap = 'round';
 	}
 
-
-	function getColor(x) {
-		return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
+	function getColor(x, y) {
+		// return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
+		return `hsla( ${(x / w) * 360 + frame}, 80%, 50%, ${y / h + frame} )`;
 	}
-
 
 	function anim() {
 		window.requestAnimationFrame(anim);
@@ -112,25 +120,33 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		ctx.fillRect(0, 0, w, h);
 		ctx.shadowBlur = 0.5;
 
-		for (var i = 0; i < lines.length; ++i)
+		// console.log(`🚀 ~ file: sketch05.svelte ~ line 124 ~ anim ~ lines`, lines)
+		for (var i = 0; i < lines.length; ++i) {
+			lines[i].bounce()
+			
+			// lines.splice(i, 1);
+				// --i;
+            // console.log(`🚀 ~ file: sketch05.svelte ~ line 125 ~ anim ~ lines[i]`, lines[i])
 			if (lines[i].step()) {
 				// if true it's dead
 
 				lines.splice(i, 1);
 				--i;
+				// i += 10;
+				// i -= 10;
 			}
-
+		}
 		// spawn new
 
 		++timeSinceLast;
 
 		if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
 			timeSinceLast = 0;
-
+			setStartCoords();
 			lines.push(new Line(starter));
 
 			// cover the middle;
-			ctx.fillStyle = ctx.shadowColor = getColor(starter.x);
+			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y);
 			ctx.beginPath();
 			ctx.arc(starter.x, starter.y, initialWidth, 0, Math.PI * 2);
 			ctx.fill();
@@ -146,6 +162,13 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			var dir = dirs[(Math.random() * dirs.length) | 0];
 			this.vx = dir[0];
 			this.vy = dir[1];
+			// if (this.x <= 0 || this.x >= w) {
+			// 	this.vx *= -1;
+			// }
+			// if (this.y <= 0 || this.y >= h) {
+			// 	this.vy *= -1;
+			// }
+
 		} while (
 			(this.vx === -parent.vx && this.vy === -parent.vy) ||
 			(this.vx === parent.vx && this.vy === parent.vy)
@@ -156,6 +179,31 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 		this.dist = Math.random() * (maxDist - minDist) + minDist;
 	}
+
+	Line.prototype.wrap = function () {
+		this.x = (this.x + w) % w;
+		this.y = (this.y + h) % h;
+	};
+
+	Line.prototype.bounce = function () {
+		if (this.x <= 0 || this.x >= w) {
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ w`, w)
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x`, this.x)
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x >= w`, this.x >= w)
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 185 ~ this.x <= 0`, this.x <= 0)
+			
+			this.vx *= -1;
+			this.vy *= -1;
+		}
+		if (this.y <= 0 || this.y >= h) {
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ h`, h)
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y `, this.y )
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y >= h`, this.y >= h)
+            console.log(`🚀 ~ file: sketch05.svelte ~ line 192 ~ this.y <= 0`, this.y <= 0)
+			this.vy *= -1;
+			this.vx *= -1;
+		}
+	};
 	Line.prototype.step = function () {
 		var dead = false;
 
@@ -166,7 +214,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.y += this.vy;
 
 		--this.dist;
-
+		// this.x = (this.x + w) % w;
+		// this.y = (this.y + h) % h;
 		// kill if out of screen
 		if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) dead = true;
 
@@ -177,13 +226,15 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 
 			// add 2 children
 			if (lines.length < maxLines) lines.push(new Line(this));
-			if (lines.length < maxLines && Math.random() < 0.5) lines.push(new Line(this));
+			if (lines.length < maxLines * 1 && Math.random() < 0.5) lines.push(new Line(this));
+			// adjust first maxLines condition above 1 to create a pause in emitter while lines diminish
 
 			// kill the poor thing
-			if (Math.random() < 0.2) dead = true;
+			// if (Math.random() < 0.5) dead = true;
+			// dead = true;
 		}
 
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x);
+		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		ctx.moveTo(this.x, this.y);
@@ -193,23 +244,23 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		if (dead) return true;
 	};
 
-	const sketch = ({}) => {
-		return ({ context, width, height }) => {
-			const { background, foreground, radius, arclen, angle, lineWidth, outline, stroke } = data;
-			context.clearRect(0, 0, width, height);
-			context.fillStyle = background;
-			context.fillRect(0, 0, width, height);
+	// const sketch = ({}) => {
+	// 	return ({ context, width, height }) => {
+	// 		const { background, foreground, radius, arclen, angle, lineWidth, outline, stroke } = data;
+	// 		context.clearRect(0, 0, width, height);
+	// 		context.fillStyle = background;
+	// 		context.fillRect(0, 0, width, height);
 
-			const minDim = Math.min(width, height);
-			context.beginPath();
-			context.arc(width / 2, height / 2, minDim * radius, angle, Math.PI * 2 * arclen + angle);
-			context.fillStyle = foreground;
-			context.strokeStyle = foreground;
-			context.lineWidth = lineWidth;
-			if (outline) context.stroke();
-			else context.fill();
-		};
-	};
+	// 		const minDim = Math.min(width, height);
+	// 		context.beginPath();
+	// 		context.arc(width / 2, height / 2, minDim * radius, angle, Math.PI * 2 * arclen + angle);
+	// 		context.fillStyle = foreground;
+	// 		context.strokeStyle = foreground;
+	// 		context.lineWidth = lineWidth;
+	// 		if (outline) context.stroke();
+	// 		else context.fill();
+	// 	};
+	// };
 </script>
 
 <canvas id="c" class="w-full h-full" />
