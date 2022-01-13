@@ -49,7 +49,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	let minDist = 30, // 10, 30
 		maxDist = 190,
 		initialWidth = 1,
-		maxWidth =12,
+		maxWidth =6,
 		maxLines = 150, // 100
 		initialLines = 0, // 4
 		speed = 2.5,
@@ -82,7 +82,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			y: h / 2,
 			vx: 0,
 			vy: 0,
-			width: initialWidth
+			width: random.range(initialWidth, maxWidth),
+			reverse: false
 		};
 
 	function setStartCoords() {
@@ -161,7 +162,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.x = parent.x | 0;
 		this.y = parent.y | 0;
 		// this.width = parent.width / 1.25;
-		this.width = parent.width
+		// this.width = parent.width
+		this.width = random.range(initialWidth, maxWidth)
+		this.reverse = false
 
 		do {
 			var dir = dirs[(Math.random() * dirs.length) | 0];
@@ -244,8 +247,16 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// if (Math.random() < 0.5) dead = true;
 			// dead = true;
 		}
-
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, this.vx * this.vy);
+		let velFactor
+		//  velFactor = ((this.vx * this.vy) + 1) * .5;
+		//  velFactor = this.vx * this.vy;
+		//  velFactor = this.vx + this.vy;
+		//  velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
+		//  velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
+		 velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
+		//  velFactor = this.vx - this.vy * this.vx;
+		//  velFactor = this.vx * this.vy * this.vy;
+		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, velFactor);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		ctx.moveTo(this.x, this.y);
