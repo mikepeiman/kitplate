@@ -106,9 +106,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		ctx.lineCap = 'round';
 	}
 
-	function getColor(x, y) {
+	function getColor(x, y, alphaFactor) {
 		// return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
-		return `hsla( ${(x / w) * 360 + frame}, 80%, 50%, ${y / h + frame} )`;
+		return `hsla( ${(x / w) * 360 + frame}, 80%, 50%, ${y / h + frame * alphaFactor} )`;
 	}
 
 	function anim() {
@@ -229,8 +229,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		if (this.dist <= 0) {
 			var dir = dirs[(Math.random() * dirs.length) | 0];
             // console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
-			this.vx = dir[0] * speed * random.range(0.5, 1.5);
-			this.vy = dir[1] * speed * random.range(0.5, 1.5);
+			let newRand = random.range(0.5, 1.5);
+			this.vx = dir[0] * speed * newRand
+			this.vy = dir[1] * speed * newRand
 			// keep yo self, sometimes
 			this.dist = Math.random() * (maxDist - minDist) + minDist;
 
@@ -244,7 +245,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// dead = true;
 		}
 
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y);
+		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, this.vx * this.vy);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		ctx.moveTo(this.x, this.y);
