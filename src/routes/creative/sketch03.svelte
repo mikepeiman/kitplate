@@ -222,12 +222,12 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 				}
 				hex.wrap(width, height);
 			});
-			requestAnimationFrame(sketch());
+			requestAnimationFrame(sketch(context, width, height));
 		};
 	};
 	// let counter = 0
-	const animate = () => {
-		console.log(`Mike animate ${counter++}`);
+	const animate = (context, width, height) => {
+		// console.log(`Mike animate ${counter++}`);
 		requestAnimationFrame(animate);
 		sketch({ context, width, height });
 	};

@@ -47,14 +47,14 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		anim();
 	});
 
-	let minDist = 60, // 10, 30
-		maxDist = minDist * 1.2,
+	let minDist = 120, // 10, 30
+		maxDist = minDist * 5.2,
 		initialWidth = 1,
 		minWidth = initialWidth,
-		maxWidth = 5,
-		maxLines = 175, // 100
+		maxWidth = 15,
+		maxLines = 475, // 100
 		initialLines = 125, // 4
-		speed = 2.25, // set this high and see what happens... maybe should decouple speed from size of lines
+		speed = 3, // set this high and see what happens... maybe should decouple speed from size of lines
 		lines = [],
 		frame = 0,
 		starter = {},
@@ -104,7 +104,10 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		lines.length = 0;
 		for (let i = 0; i < initialLines; ++i) {
 			setStartCoords();
-			lines.push(new Line(starter));
+			let line = new Line(starter);
+			line.randomSat = random.range(10,90);
+			line.randomLight = random.range(10,90);
+			lines.push(line);
 		}
 
 		ctx.fillStyle = '#222';
@@ -114,15 +117,17 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		ctx.lineCap = 'round';
 	}
 
-	function getColor(x, y, alphaFactor) {
-        // console.log(`🚀 ~ file: sketch05.svelte ~ line 117 ~ getColor ~ alphaFactor`, alphaFactor)
-		let finalFactor
+	function getColor(x, y, sat, light, alphaFactor) {
+		// console.log(`🚀 ~ file: sketch05.svelte ~ line 117 ~ getColor ~ alphaFactor`, alphaFactor)
+		let finalFactor;
 		// finalFactor = y / h + frame * alphaFactor
-		finalFactor = alphaFactor - Math.floor(alphaFactor)
-        // console.log(`🚀 ~ file: sketch05.svelte ~ line 119 ~ getColor ~ finalFactor`, finalFactor)
+		finalFactor = alphaFactor - Math.floor(alphaFactor);
+		// console.log(`🚀 ~ file: sketch05.svelte ~ line 119 ~ getColor ~ finalFactor`, finalFactor)
 		// return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
-		// return `hsla( ${((x / w) * 180 + frame + 5 * random.range(-1,1)) % 180 -  120}, 80%, 50%, ${y / h + frame * Math.random() * alphaFactor} )`;
-		return `hsla( ${(x / w) * 180 + frame -  120}, 80%, 50%, ${finalFactor} )`;
+		return `hsla( ${((x / w * y / h) * 180 + 10 * Math.cos(frame)) % 180 -  120}, ${sat}%, ${light}%, ${y / h + frame * Math.random() * alphaFactor} )`;
+		// return `hsla( ${(x / w) / (y * h) + (x / h) - (y / w) * 180 + (frame / 10) -  120}, 80%, 50%, ${finalFactor} )`;
+		// return `hsla( ${(x / w) / (y * h) + (x / h) - (y / w) * 180 + (frame / 10) -  120}, ${Math.floor(100 * finalFactor) - 10}%, ${Math.floor(50 * finalFactor) + 10}%, ${finalFactor} )`;
+		// return `hsla( ${(x / y) * 180 + frame - 120}, ${sat}%, ${light}%, ${finalFactor} )`;
 	}
 
 	function anim() {
@@ -157,7 +162,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		++timeSinceLast;
 
 		if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
-		// if (lines.length < maxLines) {
+			// if (lines.length < maxLines) {
 			// && timesincelast > 10
 			timeSinceLast = 0;
 			setStartCoords();
@@ -167,11 +172,19 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			let dir = dirs[randomDir];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 155 ~ anim ~ dir`, dir)
 			line.dirIndex = randomDir;
+			line.randomSat = random.range(10, 90);
+			line.randomLight = random.range(10, 90);
 			// line.randomFactor = random.range(0.5, 1.5);
 			lines.push(line);
 
 			// cover the middle;
-			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y, Math.random());
+			ctx.fillStyle = ctx.shadowColor = getColor(
+				starter.x,
+				starter.y,
+				line.randomSat,
+				line.randomLight,
+				Math.random()
+			);
 			ctx.beginPath();
 			// ctx.arc(starter.x, starter.y, initialWidth / 4, 0, Math.PI * 2);
 			// ctx.fill();
@@ -187,6 +200,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		this.reverse = false;
 		this.dirIndex = parent.dirIndex + 1;
 		this.randomFactor = random.range(0.1, 1);
+		this.randomSat = random.range(10, 90);
+		this.randomLight = random.range(10, 90);
 		do {
 			let dir = dirs[(Math.random() * dirs.length) | 0];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
@@ -249,7 +264,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		// make children :D
 		// if (this.dist <= 0 && this.width > initialWidth) {
 		if (this.lineDist <= 0) {
-			let dir
+			let dir;
 			// dir = dirs[(Math.random() * dirs.length) | 0];
 			// this.dirIndex ++
 			Math.random > 0.5 && this.dirIndex >= 1 ? this.dirIndex-- : this.dirIndex++;
@@ -270,7 +285,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// this.dist = random.range(minDist, maxDist) + minDist;
 			// looking for consistent hexagons
 			// this.lineDist = minDist;
-			this.lineDist = (minDist * Math.random()) * 2;
+			this.lineDist = minDist * Math.random() * 2;
 			// add 2 children
 			if (lines.length < maxLines) lines.push(new Line(this));
 			if (lines.length < maxLines * 2 && Math.random() < 0.5) lines.push(new Line(this));
@@ -285,14 +300,22 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		//  velFactor = this.vx * this.vy;
 		// velFactor = this.vx + this.vy + this.x + this.y;
 		//  velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
-		//  velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
+		 velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		// velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		//  velFactor = this.vx - this.vy * this.vx; // this one does up-right, minimal effect
 		//  velFactor = this.vx * this.vy * this.vy; // this one does bridges up left down, a bit messy?
-		this.width > maxWidth / 2 ? velFactor = this.width / 5 :velFactor = this.width * 5; // this is pretty slick, all angles used
+		// this.width > maxWidth / 2 ? (velFactor = this.width / 5) : (velFactor = this.width * 5); // this is pretty slick, all angles used
 		// this.width += velFactor / 3;
 		// this.width += velFactor / 3;
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, this.randomFactor);
+		ctx.strokeStyle = ctx.shadowColor = getColor(
+			this.x,
+			this.y,
+			this.randomSat,
+			this.randomLight,
+			this.randomFactor
+		);
+		// console.log(`🚀 ~ file: sketch05.svelte ~ line 300 ~ anim ~ this.randomLight`, this.randomLight)
+		// console.log(`🚀 ~ file: sketch05.svelte ~ line 300 ~ anim ~ this.randomSat`, this.randomSat)
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		ctx.moveTo(this.x, this.y);
@@ -331,7 +354,18 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	// };
 </script>
 
-<canvas id="c" class="w-full h-full" />
+<div class="flex h-full">
+	<div class="flex w-full h-full">
+		<canvas id="c" class="w-full h-full" />
+	</div>
+	<div class="flex flex-col">
+
+		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
+		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
+		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
+	</div>
+</div>
+
 
 <!-- <CanvasSketchEditor {sketch} {settings} {data} {hidePanel}>
 	<ColorInput label='Background' bind:value={data.background} />
