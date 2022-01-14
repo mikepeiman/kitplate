@@ -98,7 +98,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			// this.vel = new Vector(random.range(-10, 10), Math.ceil(random.range(-10, 10)));
 			this.angle = Math.floor(random.range(0, 6));
 			this.vel = new Vector(parseFloat(angles[this.angle].x), parseFloat(angles[this.angle].y));
-            console.log(`🚀 ~ file: sketch04.svelte ~ line 101 ~ Agent ~ constructor ~ this.vel`, this.vel)
+            // console.log(`🚀 ~ file: sketch04.svelte ~ line 101 ~ Agent ~ constructor ~ this.vel`, this.vel)
 			this.radius = random.range(data.radiusMin, data.radiusMax);
 			this.sideLength = 20
 			this.remainingTravel = this.sideLength;
