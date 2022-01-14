@@ -1,14 +1,19 @@
 <script>
-    let icons = [
-        {name: 'Github', src: ''}
-    ]
+    export let bgColor = 'bg-gray-900'
+    export let textColor = 'text-gray-300'
+    import Icon from '@iconify/svelte';
+    let icons =       {
+            github: 'carbon:logo-github',
+    }
+    
 
 </script>
 
-<div class="footer grid  bg-slate-900  flex align-middle items-center justify-between">
+<div class="footer grid {bgColor} {textColor} font-display text-base flex align-middle items-center justify-between h-20">
     <!-- <button class="logo btn btn-outline place-content-center mx-5 p-5 rounded-lg bg-blue-700">Footer</button> -->
-    <nav class="social w-full flex items-center justify-center xl:pl-24">
-        <p>Made with <span class="text-rose-500 text-lg px-1">♥</span> by Mike Peiman.</p>
+    <nav class="social w-full flex items-end m-0 justify-center xl:pl-24">
+        <div class="text-winterblues-300">Made with <span class="text-rose-500 text-lg px-1.5">♥</span> by Mike Peiman.</div>
+        <a href="https://github.com/mikepeiman" target="_blank" class="w-8 h-8  text-winterblues-300 hover:text-winterblues-700 transition m-0 "><Icon icon={icons.github} class="w-8 h-8 ml-2 -mt-1" /></a>
         <!-- <a href="/">Home</a>
         <a href="/about">About</a>
         <a href="/creative">Creative</a> -->
@@ -30,7 +35,6 @@
     nav {
         grid-area: social;
         a {
-            margin: 1em;
             text-decoration: none;
             font-weight: 500;
         }

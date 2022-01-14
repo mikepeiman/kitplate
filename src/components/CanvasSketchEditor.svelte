@@ -5,6 +5,7 @@
 	export let data = {};
 	export let sketch = () => {};
 	export let hidePanel = false;
+	let viewportW, viewportH
 	let localStorageSupported = (() => {
 		try {
 			return typeof window.localStorage !== 'undefined';
@@ -40,17 +41,19 @@
 			}
 		}
 	}
-
+$: settings.dimensions[0] = viewportW
+$: settings.dimensions[1] = viewportH
+$: console.log(`🚀 ~ file: CanvasSketchEditor.svelte ~ line 45 ~ viewportW`, viewportW)
 
 </script>
 
-<main class="sketch" class:preview={'/creative' === path}>
+<main class="sketch rounded-lg" class:preview={'/creative' === path}>
 	{#if '/creative' === path}
 		<div class="title flex items-center justify-center flex w-full self-center">
 			<h1 class="text-2xl text-center text-sky-200 mt-6 w-full self-center">{data.TITLE}</h1>
 		</div>
 	{/if}
-	<div class="viewport">
+	<div class="viewport rounded-lg" bind:offsetWidth={viewportW} bind:offsetHeight={viewportH}>
 		<CanvasSketch {data} {settings} {sketch} />
 	</div>
 
@@ -67,9 +70,11 @@
 		padding: 0;
 	} */
 
+
 	main {
 		// ORIGINAL STYLES
-		width: 100%;
+		// width: 100%;
+		width: auto;
 		height: 100%;
 		display: flex;
 		justify-content: center;
@@ -96,18 +101,18 @@
 		// width: 300px;
 	}
 	.sketch {
-		/* width: auto;
-		grid-row: sketch-start; */
+		// width: 200px;
 	}
 	.viewport {
 		grid-area: sketch-canvas;
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		align-items: flex-start;
 		flex-direction: column;
+		width: 100%;
 		height: 100%;
 		flex-basis: 60%;
-		min-width: 200px;
+		// min-width: 200px;
 		flex-grow: 1;
 		flex-shrink: 1;
 	}

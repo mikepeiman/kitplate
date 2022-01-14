@@ -5,28 +5,47 @@
 	import Nav from '../components/Nav.svelte';
 	import { page } from '$app/stores';
 	$: path = $page.path;
-    $: console.log(`🚀 ~ file: index.svelte ~ line 24 ~ path`, path)
+	$: console.log(`🚀 ~ file: index.svelte ~ line 24 ~ path`, path);
+	$: console.log(
+		`🚀 ~ file: index.svelte ~ line 24 ~ path includes blog : `,
+		path.includes('blog')
+	);
 </script>
 
-<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
-	{#if path != '/'}
-	<Nav>
-		<slot />
-	</Nav>
-	<div class="main flex flex-col items-center jutify-center">
+{#if path.includes('blog')}
+	<div class="blog bg-gray-900 min-h-screen height-full flex flex-col items-center jutify-center">
 		<slot />
 	</div>
-	{:else}
-	<div class="main flex flex-col items-center -mt-12 jutify-center">
+	<div class="">
+		<Footer textColor="text-gray-900" />
+	</div>
+{:else if path !== '/' && !path.includes('egghead-discord')}
+	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
+		<Nav>
+			<slot />
+		</Nav>
+		<div class="layout-main flex flex-col items-center jutify-center">
+			<slot />
+		</div>
+		<Footer />
+	</div>
+{:else if path === '/'}
+	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
+		<div class="layout-main flex flex-col -mt-20 items-center jutify-center">
+			<slot />
+		</div>
+		<Footer />
+	</div>
+{:else}
+	<div class="layout-main flex flex-col items-center jutify-center">
 		<slot />
 	</div>
-	{/if}
-
-
-	<Footer />
-</div>
+{/if}
 
 <style lang="scss">
+	:global(#svelte) {
+		min-height: 100vh;
+	}
 	:global(#app-layout) {
 		// height: 100vh;
 		// width: 100vw;
@@ -34,11 +53,12 @@
 		grid-template-columns: auto;
 		grid-template-areas:
 			' header '
-			' main '
+			' layout-main '
 			' footer ';
-	}
-	.main {
-		grid-area: main;
+		}
+
+		.layout-main {
+		grid-area: layout-main;
 		// display: flex;
 		// flex-direction: column;
 		justify-content: center;
@@ -51,5 +71,17 @@
 
 	.sidebar {
 		grid-area: sidebar;
+	}
+
+	.center {
+		--gap: 1rem;
+		--mw: 50rem;
+
+		width: 100%;
+		max-width: var(--mw);
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: var(--gap);
+		padding-right: var(--gap);
 	}
 </style>

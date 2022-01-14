@@ -1,13 +1,38 @@
 const colors = require('tailwindcss/colors')
-
+const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   important: false,
+  experimental: {
+    applyComplexClasses: true,
+  },
   mode: 'jit',
   content: ['./src/**/*.svelte'],
   theme: {
-    // extend: {
+    fontFamily: {
+      'sans': ['"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'serif': ['Newsreader', ...defaultTheme.fontFamily.serif],
+      'mono': ['Inconsolata', ...defaultTheme.fontFamily.mono],
+      // Inconsolata,Menlo,Monaco,Consolas,'Courier New',monospace;
+      'display': ['Vollkorn', ...defaultTheme.fontFamily.sans],
+      'body': ['"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'open': ['"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'cairo': ['Cairo', '"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'merriweather': ['Merriweather', '"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'eczar': ['Eczar', '"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'vollkorn': ['Vollkorn',  ...defaultTheme.fontFamily.serif],
+      'newsreader': ['Newsreader', ...defaultTheme.fontFamily.serif],
+      'fira': ['"Fira Sans"', '"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'josefin': ['"Josefin Sans"', '"Open Sans"', ...defaultTheme.fontFamily.sans],
+      'montserrat': ['Montserrat', '"Open Sans"', ...defaultTheme.fontFamily.sans],
+
+    },
+    extend: {
+
       colors: {
         ...colors,
+        gray: {
+          750: '#223240',
+        },
         warm1: {
           100: "#f3d9d0",
           200: "#e7b4a1",
@@ -207,15 +232,15 @@ module.exports = {
           900: "#ffba08"
         },
         winterblues: {
-          100: "#03045e",
-          200: "#023e8a",
-          300: "#0077b6",
-          400: "#0096c7",
+          100: "#caf0f8",
+          200: "#ade8f4",
+          300: "#90e0ef",
+          400: "#48cae4",
           500: "#00b4d8",
-          600: "#48cae4",
-          700: "#90e0ef",
-          800: "#ade8f4",
-          900: "#caf0f8"
+          600: "#0096c7",
+          700: "#0077b6",
+          800: "#023e8a",
+          900: "#03045e",
         },
         limegreens: {
           100: "#002411",
@@ -230,19 +255,20 @@ module.exports = {
         },
  
       },
-    // },
+    },
     screens: {
       'sm': '500px',
       'md': '800px',
       'lg': '1200px',
       'xl': '1600px',
-      '2xl': '2200px',
-      '3xl': '2800px',
+      '2xl': '2000px',
+      '3xl': '2400px',
     }
   },
   variants: {},
   plugins: [
     require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
     require('daisyui'),
     function ({ addBase, theme }) {
       function extractColorVars(colorObj, colorGroup = '') {

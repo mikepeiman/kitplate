@@ -28,12 +28,14 @@
 		{ title: 'Home', url: '/' },
 		{ title: 'About', url: '/about' },
 		{ title: 'Color', url: '/color' },
-		{ title: 'Blog', url: '/posts' },
+		{ title: 'Blog', url: '/blog' },
 		{ title: 'Posts endpoint', url: '/posts.json' },
 		{ title: 'Todos', url: '/todos' },
 		{ title: 'Quotes', url: '/quotes' },
+		{ title: 'Pokemon', url: '/pokemon' },
 		{ title: 'Creative', url: '/creative' },
-		{ title: 'Mike', url: '/mikepeiman' }
+		{ title: 'MetaBrain', url: '/metabrain' },
+		{ title: 'Discord', url: '/egghead-discord' },
 	];
 
 	function respondToCloseClick() {

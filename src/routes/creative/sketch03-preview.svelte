@@ -3,7 +3,7 @@ https://svelte.dev/repl/5ab538b7182941f789908a660e9bd25c?version=3.12.1
 
 Leaving his example as the first sketch here in honor of his work and amazing contributions -->
 <script>
-	export let hidePanel = false;
+	export let hidePanel = true;
 	import CanvasSketchEditor from '$components/CanvasSketchEditor.svelte';
 	import Slider from '$components/Slider.svelte';
 	import OptionSelect from '$components/OptionSelect.svelte';
@@ -12,62 +12,74 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	import random from 'canvas-sketch-util/random.js';
 	import math from 'canvas-sketch-util/math.js';
 	import Color from 'canvas-sketch-util/color.js';
+	import CanvasSketch from '$components/CanvasSketch.svelte';
 	import { onMount } from 'svelte';
 
-	let width = 800;
-	let height = 800;
+	let width;
+	let height;
 	let context;
-	let canvas;
-	let viewport
-    $: console.log(`🚀 ~ file: sketch03-preview.svelte ~ line 22 ~ viewport`, viewport?.style)
-	$: viewport ? width = viewport.offsetWidth : width
-    $: console.log(`🚀 ~ file: sketch03-preview.svelte ~ line 24 ~ width`, width)
+	let canvases, canvas, thisCanvas, w, h;
+	let mounted = false;
+
 	$: canvas ? (context = canvas.getContext('2d')) : context;
-	import { page } from '$app/stores';
-	$: path = $page.path;
+	// $: canvas ? canvas.setAttribute('style', `width: ${width}px; height: ${height}px;`) : canvas
+	// $: canvas ? canvas.style.width = `${width}px` : canvas
+	// $: canvas ? canvas.style.height = `${height}px` : canvas
 	onMount(() => {
-		let canvas = document.getElementsByTagName('canvas')[0];
+		let canvases = document.getElementsByTagName('canvas');
+		// thisCanvas = document.getElementById(data.TITLE);
+		canvas = canvases[0];
+		// if (canvases.length > 1) {
+		// 	canvases[1].parentNode.parentNode.parentNode.removeChild(canvases[1].parentNode.parentNode);
+		// }
 		context = canvas.getContext('2d');
-		console.log(`🚀 ~ file: sketch03.svelte ~ line 25 ~ onMount ~ context`, context);
-		sketch({ context, width, height });
-		// animate()
+		let parent = canvas.parentElement;
+		width = parent.offsetWidth;
+		height = parent.offsetHeight;
+		mounted = true;
 	});
-	// ========================================================================
-	// basic animation example below; canvas-sketch 'animate' setting calls this on main return function
-	// =============================================================================
 
-	// animate()
-	// =============================================================================
-
-	let agents = [];
 	let hexes = [];
-
 	const data = {
-		TITLE: 'Sketch03',
-		numNodes: 200,
-		range: 200,
+		TITLE: 'Sketch03-preview',
+		numNodes: 50,
+		range: 50,
 		lineCap: 'butt',
 		lineCaps: [
 			{ value: 'butt', label: 'butt' },
 			{ value: 'round', label: 'round' }
 		],
-		showNodes: true,
+		showNodes: false,
 		showLines: true,
 		nodeType: 'hex',
 		nodeTypes: [
 			{ value: 'hex', label: 'hex' },
 			{ value: 'circle', label: 'circle' }
 		],
-		lineWidth: 2,
-		lineWidthMax: 5,
+		lineWidth: 1,
+		lineWidthMax: 3,
 		radiusMin: 10,
 		radiusMax: 30,
 		animate: true
 	};
 	$: data;
 	const settings = {
-		dimensions: [width, height]
+		dimensions: [width, height],
+		// canvas: thisCanvas ? thisCanvas : canvas,
+		fps: 60,
+		// canvasWidth: w,
+		// canvasHeight: h,
+		// styleWidth: true,
+		// styleHeight: true,
+		// styleCanvas: true,
+		// scaleToView: true,
+		// scaleToFit: true,
+		// resizeCanvas: false,
+		scaleContext: true,
 	};
+
+	$: settings.dimensions[0] = width;
+	$: settings.dimensions[1] = height;
 
 	class Vector {
 		constructor(x, y) {
@@ -89,8 +101,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			this.radius = random.range(data.radiusMin, data.radiusMax);
 		}
 		update() {
-			this.pos.x += this.vel.x;
-			this.pos.y += this.vel.y;
+			this.pos.x += this.vel.x * 0.2;
+			this.pos.y += this.vel.y * 0.2;
 		}
 
 		bounce(width, height) {
@@ -169,8 +181,6 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	};
 
 	const rangeAlpha = (range, dist) => {
-		// let c = Color.parse(color).hsla[3]
-		// let r = math.mapRange(dist, 0, range, 0, 1, true)
 		return math.mapRange(dist, 0, range, 1, 0, true);
 	};
 
@@ -188,11 +198,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 			}
 		}
 	};
-
-
-
 	const sketch = () => {
-		// requestAnimationFrame(sketch({ context, width, height }));
 
 		constructNodes(width, height);
 		for (let i = 0; i < hexes.length; i++) {
@@ -204,7 +210,6 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 				context.lineWidth = math.mapRange(dist, 0, data.range, data.lineWidthMax, 1);
 				context.beginPath();
 				context.moveTo(hex.pos.x, hex.pos.y);
-				// console.log(`🚀 ~ file: sketch03.svelte ~ line 146 ~ sketch ~ hex.pos.x, hex.pos.y`, hex.pos.x, hex.pos.y)
 				data.showLines ? context.lineTo(other.pos.x, other.pos.y) : 0;
 				let a = rangeAlpha(data.range, dist);
 				// Color.parse(hex.color).hsla[3] = c
@@ -228,108 +233,15 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 				if (data.showNodes) {
 					data.nodeType == 'hex' ? hex.drawHex(context) : hex.drawCircle(context);
 				}
-				hex.wrap(width, height);
+				// hex.wrap(width, height);
+				hex.bounce(width, height);
 			});
 			requestAnimationFrame(sketch());
 		};
 	};
-	// let counter = 0
-	const animate = () => {
-		console.log(`Mike animate ${counter++}`);
-		sketch({ context, width, height });
-		requestAnimationFrame(animate);
-	};
-	//
+
 </script>
 
-<main class="sketch" class:preview={'/creative' === path}>
-	{#if '/creative' === path}
-		<div class="title flex items-center justify-center flex w-full self-center">
-			<h1 class="text-2xl text-center text-sky-200 mt-6 w-full self-center">{data.TITLE}</h1>
-		</div>
-	{/if}
-	<div class="viewport" bind:this={viewport}>
-		<canvas />
-	</div>
+<!-- <canvas id={data.TITLE} style="width: {w}px; height: {w}px;" class="rounded-lg" /> -->
+<CanvasSketchEditor {sketch} {settings} {data} {hidePanel} />
 
-	{#if !hidePanel}
-		<div class="panel">
-			<Slider label="Range" bind:value={data.range} min="10" max="500" step="10" />
-			<Slider
-				label="Number of nodes"
-				bind:value={data.numNodes}
-				on:message={constructNodes(width, height)}
-				min="10"
-				max="1000"
-				step="10"
-			/>
-			<OptionSelect items={data.lineCaps} bind:selected={data.lineCap} />
-			<OptionSelect items={data.nodeTypes} bind:selected={data.nodeType} />
-			<Checkbox label="Show nodes" bind:checked={data.showNodes} />
-			<Checkbox label="Show lines" bind:checked={data.showLines} />
-		</div>
-	{/if}
-</main>
-
-<style lang="scss">
-
-main {
-		// ORIGINAL STYLES
-		width: 100%;
-		height: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: row;
-		// ADDED
-		grid-area: main;
-		&.preview {
-			grid-area: none;
-			width: 100%;
-			height: 100%;
-			display: grid;
-			grid-template-rows: 3rem 16rem;
-			grid-template-areas:
-				'sketch-title'
-				'sketch-canvas';
-			justify-content: center;
-			align-items: center;
-			flex-direction: row;
-		}
-	}
-	.viewport {
-		grid-area: sketch-canvas;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-		height: 100%;
-		flex-basis: 60%;
-		min-width: 200px;
-		flex-grow: 1;
-		flex-shrink: 1;
-	}
-	.panel {
-		padding: 20px;
-		box-sizing: border-box;
-		flex-basis: 300px;
-		min-width: 200px;
-		max-width: 400px;
-		flex-grow: 1;
-		flex-shrink: 1;
-		height: 100%;
-		background: hsl(0, 0%, 95%);
-		border-left: 1px solid hsl(0, 0%, 90%);
-		overflow-y: scroll;
-	}
-
-	canvas {
-		margin: auto;
-		display: block;
-		box-shadow: 0px 2px 12px -2px rgba(0, 0, 0, 0.15);
-		width: 100%;
-		/* width: inherit; */
-		/* min-width: inherit; */
-		height: auto;
-	}
-</style>
