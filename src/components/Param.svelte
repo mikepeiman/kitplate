@@ -1,9 +1,10 @@
 <script>
 	export let label = '';
+	export let color = 'currentColor';
 </script>
 
 <div class='param'>
-	{#if label}<label>{label}</label>{/if}
+	{#if label}<label class="{color ? color : 'currentColor'}">{label}</label>{/if}
 	<div class='param-wrapper'>
 		<slot class='test'></slot>
 	</div>
@@ -37,7 +38,6 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		color: black;
 		padding-right: 10px;
 		flex-basis: 40%;
 		box-sizing: border-box;

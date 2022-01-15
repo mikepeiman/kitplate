@@ -9,7 +9,7 @@
 	export let min = 1;
 	export let max = 100;
 	export let step = 1;
-
+	export let color = 'currentColor'
 	function dispatchMessage() {
 		dispatch('message', {
 			value: value
@@ -18,7 +18,7 @@
 	}
 </script>
 
-<Param {label}>
+<Param {label} {color}>
 	<div class="flex">
 		<input type="range" bind:value {min} {max} {step} on:change={dispatchMessage} />
 		<input

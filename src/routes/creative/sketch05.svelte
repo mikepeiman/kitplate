@@ -28,21 +28,72 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	let c, ctx, w, h;
 	onMount(() => {
 		c = document.getElementById('c');
-		w = c.width = window.innerWidth;
-		(h = c.height = window.innerHeight), (ctx = c.getContext('2d'));
+
+		c.addEventListener('click', (e) => {
+			hidePanel = !hidePanel;
+			e.target;
+			console.log(`🚀 ~ file: sketch05.svelte ~ line 34 ~ c.addEventListener ~ e.target`, e.target);
+		});
+		console.log(`🚀 ~ file: sketch05.svelte ~ line 31 ~ onMount ~ c ${c}, `, c);
+		// w = c.width = window.innerWidth;
+		// h = c.height = window.innerHeight;
+		ctx = c.getContext('2d');
 		// starter.x = w / 2;
 		// starter.y = h / 2;
 		// setStartCoords();
 		console.log(`🚀 ~ file: sketch05.svelte ~ line 37 ~ w `, w);
 		console.log(`🚀 ~ file: sketch05.svelte ~ line 39 ~ h`, h);
-		window.addEventListener('resize', function () {
-			w = c.width = window.innerWidth;
-			h = c.height = window.innerHeight;
-			// starter.x = w / 2;
-			// starter.y = h / 2;
-			// setStartCoords();
-			init();
+		const observer = new ResizeObserver((entries) => {
+			console.log(`🚀 ~ file: sketch05.svelte ~ line 47 ~ observer ~ entries`, entries);
+			entries.forEach((entry) => {
+				if (c.nodeName.toLowerCase() == 'canvas') {
+					// w = c.width = entry.contentRect.width;
+					// h = c.height = entry.contentRect.height;
+					console.log(`🚀 ~ file: sketch05.svelte ~ line 52 ~ observer ~ entry`, entry);
+					console.log(`🚀 ~ file: sketch05.svelte ~ line 53 ~ observer ~ w`, w);
+					console.log(`🚀 ~ file: sketch05.svelte ~ line 54 ~ observer ~ h`, h);
+					// c.width = w = c.parentElement.clientWidth;
+					console.log(
+						`🚀 ~ file: sketch05.svelte ~ line 57 ~ entries.forEach ~ c.parentElement.clientWidth`,
+						c.parentElement.clientWidth
+					);
+					// c.height = h = c.parentElement.clientHeight;
+					console.log(
+						`🚀 ~ file: sketch05.svelte ~ line 59 ~ entries.forEach ~ c.parentElement.clientHeight`,
+						c.parentElement.clientHeight
+					);
+				}
+			});
+
+			// if (c) {
+			// 	// ctx.fillStyle = data.background;
+			// 	// ctx.fillRect(0, 0, w, h);
+			// 	init();
+			// }
 		});
+		observer.observe(c);
+		c.width = w = c.parentElement.clientWidth;
+		c.height = h = c.parentElement.clientHeight;
+		// window.addEventListener('resize', function () {
+		// 	// w = c.width = window.innerWidth;
+		// 	// h = c.height = window.innerHeight;
+		// 	// c.width = w = c.parentElement.clientWidth;
+		// 	c.width = w = c.parentElement.clientWidth;
+		// 	console.log(
+		// 		`🚀 ~ file: sketch05.svelte ~ line 57 ~ entries.forEach ~ c.parentElement.clientWidth`,
+		// 		c.parentElement.clientWidth
+		// 	);
+		// 	// c.height = h = c.parentElement.clientHeight;
+		// 	c.height = h = c.parentElement.clientHeight;
+		// 	console.log(
+		// 		`🚀 ~ file: sketch05.svelte ~ line 59 ~ entries.forEach ~ c.parentElement.clientHeight`,
+		// 		c.parentElement.clientHeight
+		// 	);
+		// 	// starter.x = w / 2;
+		// 	// starter.y = h / 2;
+		// 	// setStartCoords();
+		// 	init();
+		// });
 		init();
 		anim();
 	});
@@ -105,8 +156,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		for (let i = 0; i < initialLines; ++i) {
 			setStartCoords();
 			let line = new Line(starter);
-			line.randomSat = random.range(10,90);
-			line.randomLight = random.range(10,90);
+			line.randomSat = random.range(10, 90);
+			line.randomLight = random.range(10, 90);
 			lines.push(line);
 		}
 
@@ -124,7 +175,9 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		finalFactor = alphaFactor - Math.floor(alphaFactor);
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 119 ~ getColor ~ finalFactor`, finalFactor)
 		// return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
-		return `hsla( ${((x / w * y / h) * 180 + 10 * Math.cos(frame)) % 180 -  120}, ${sat}%, ${light}%, ${y / h + frame * Math.random() * alphaFactor} )`;
+		return `hsla( ${
+			(((((x / w) * y) / h) * 180 + 10 * Math.cos(frame)) % 180) - 120
+		}, ${sat}%, ${light}%, ${y / h + frame * Math.random() * alphaFactor} )`;
 		// return `hsla( ${(x / w) / (y * h) + (x / h) - (y / w) * 180 + (frame / 10) -  120}, 80%, 50%, ${finalFactor} )`;
 		// return `hsla( ${(x / w) / (y * h) + (x / h) - (y / w) * 180 + (frame / 10) -  120}, ${Math.floor(100 * finalFactor) - 10}%, ${Math.floor(50 * finalFactor) + 10}%, ${finalFactor} )`;
 		// return `hsla( ${(x / y) * 180 + frame - 120}, ${sat}%, ${light}%, ${finalFactor} )`;
@@ -300,7 +353,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 		//  velFactor = this.vx * this.vy;
 		// velFactor = this.vx + this.vy + this.x + this.y;
 		//  velFactor = Math.random() < 0.5 ? this.vx - this.vy : this.vy - this.vx; // THIS ONE is super unexpected! dashed lines
-		 velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
+		velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		// velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		//  velFactor = this.vx - this.vy * this.vx; // this one does up-right, minimal effect
 		//  velFactor = this.vx * this.vy * this.vy; // this one does bridges up left down, a bit messy?
@@ -354,21 +407,26 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	// };
 </script>
 
-<div class="flex h-full">
-	<div class="flex w-full h-full">
-		<canvas id="c" class="w-full h-full" />
-	</div>
-	<div class="controls flex flex-col p-4">
+<div class="flex h-full w-full sketch">
+	<canvas id="c"  />
 
-		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
+	<div class="controls flex flex-col p-4">
+		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" color="text-sky-400" />
 		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
 		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
 	</div>
 </div>
 
-
 <style lang="scss">
-.controls {
-	grid-area: controls;
-}
+	:global(.controls) {
+		grid-area: controls;
+	}
+	:global(#c) {
+		grid-area: canvas;
+	}
+	.sketch {
+		display: grid;
+		grid-template-columns: auto minmax(10rem, 20rem);
+		grid-template-areas: 'canvas controls';
+	}
 </style>
