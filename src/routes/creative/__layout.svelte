@@ -3,26 +3,49 @@
 	import SideNav from '$components/SideNav.svelte';
 	import '../../app.scss';
 	import Nav from '$components/Nav.svelte';
+	import { page } from '$app/stores';
+	$: params = $page.params;
+	$: path = $page.path;
+	$: path;
+	$: console.log(`🚀 ~ file: __layout.svelte ~ line 10 ~ path`, path.split('/').length);
+	$: console.log(`🚀 ~ file: __layout.svelte ~ line 9 ~ params`, params);
 </script>
 
-<div id="creative-layout" class="grid w-auto h-full">
-	<!-- <Nav class="header">
-		<slot class="header" />
-	</Nav> -->
-	<SideNav class="sidebar">
-		<slot class="sidebar" />
-	</SideNav>
-	<slot />
-</div>
+{#if path.split('/').length > 2}
+	<div id="sketch-layout">
+		<SideNav class="sidebar">
+			<slot class="sidebar" />
+		</SideNav>
+		<div class="flex w-auto h-full">
+			<slot />
+		</div>
+	</div>
+{:else}
+	<div id="creative-layout">
+		<SideNav class="sidebar">
+			<slot class="sidebar" />
+		</SideNav>
+		<div class="flex w-auto h-full">
+			<slot />
+		</div>
+	</div>
+{/if}
 
 <style lang="scss">
 	:global(#creative-layout) {
-		width: 100%;
 		grid-template-rows: auto 1fr;
 		grid-template-columns: auto 1fr;
 		grid-template-areas:
 			'sidebar title'
 			'sidebar main';
+	}
+
+	:global(#sketch-layout) {
+		display: grid;
+		grid-area: layout-main;
+		// grid-template-rows: 1fr auto 2fr;
+		grid-template-columns: 1fr auto 2fr;
+		grid-template-areas: 'sidebar sketch controls';
 	}
 	.main {
 		justify-content: center;

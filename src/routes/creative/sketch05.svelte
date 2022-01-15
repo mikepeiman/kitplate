@@ -358,7 +358,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	<div class="flex w-full h-full">
 		<canvas id="c" class="w-full h-full" />
 	</div>
-	<div class="flex flex-col">
+	<div class="controls flex flex-col p-4">
 
 		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
 		<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
@@ -367,14 +367,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 </div>
 
 
-<!-- <CanvasSketchEditor {sketch} {settings} {data} {hidePanel}>
-	<ColorInput label='Background' bind:value={data.background} />
-	<ColorInput label='Foreground' bind:value={data.foreground} />
-	<Slider label='Arc Length' bind:value={data.arclen} />
-	<Slider label='Radius' bind:value={data.radius} />
-	<Slider label='Angle' bind:value={data.angle} min={-Math.PI} max={Math.PI} />
-	<Checkbox label='Outline' bind:checked={data.outline} />
-	{#if data.outline}
-		<Slider label='Line Width' bind:value={data.lineWidth} min=1 max=100 />
-	{/if}
-</CanvasSketchEditor> -->
+<style lang="scss">
+.controls {
+	grid-area: controls;
+}
+</style>

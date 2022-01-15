@@ -19,6 +19,11 @@
 	<div class="">
 		<Footer textColor="text-gray-900" />
 	</div>
+<!-- {:else if path.includes('creative') && path.split('/').length > 2}
+	<div class="layout-main flex flex-col items-center jutify-center">
+		<slot />
+	</div>
+	<Footer /> -->
 {:else if path !== '/' && !path.includes('egghead-discord')}
 	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
 		<Nav>
@@ -55,9 +60,9 @@
 			' header '
 			' layout-main '
 			' footer ';
-		}
+	}
 
-		.layout-main {
+	:global(.layout-main) {
 		grid-area: layout-main;
 		// display: flex;
 		// flex-direction: column;
