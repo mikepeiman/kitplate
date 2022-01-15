@@ -41,8 +41,8 @@
 			}
 		}
 	}
-$: settings.dimensions[0] = viewportW
-$: settings.dimensions[1] = viewportH
+// $: settings.dimensions[0] = viewportW
+// $: settings.dimensions[1] = viewportH
 $: console.log(`🚀 ~ file: CanvasSketchEditor.svelte ~ line 45 ~ viewportW`, viewportW)
 
 </script>

@@ -110,7 +110,7 @@
 		minWidth = initialWidth,
 		maxWidth = 5,
 		maxLines = 175, // 100
-		initialLines = 125, // 4
+		initialLines = 0, // 4
 		speed = 2.25, // set this high and see what happens... maybe should decouple speed from size of lines
 		lines = [],
 		frame = 0,
@@ -406,19 +406,16 @@
 				label="Min Distance"
 				bind:value={data.minDist}
 				min="1"
-				max="500"
-				step="5"
+				max="300"
+				step="1"
 				color="text-sky-400"
-				on:change={(e) => {
-					console.log(e.target.value);
-					init();
-				}}
+
 			/>
 			<Slider
 				label="Number of lines"
 				bind:value={data.maxLines}
 				min="1"
-				max="1000"
+				max="100"
 				step="1"
 				on:change={(e) => {
 					console.log(e.target.value);
@@ -429,18 +426,15 @@
 				label="Speed"
 				bind:value={data.speed}
 				min="1"
-				max="1000"
+				max="100"
 				step="1"
-				on:change={(e) => {
-					console.log(e.target.value);
-					init();
-				}}
+
 			/>
 			<Slider
 				label="Maxdist Factor"
 				bind:value={data.maxDistFactor}
 				min="1"
-				max="25"
+				max="50"
 				step="1"
 				on:change={(e) => {
 					console.log(e.target.value);
