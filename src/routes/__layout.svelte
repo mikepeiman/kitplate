@@ -24,12 +24,19 @@
 		<slot />
 	</div>
 	<Footer /> -->
+{:else if path.includes('creative')}
+		<div class="flex flex-col h-screen">
+			<div class="layout-creative flex flex-col h-full items-start jutify-start">
+				<slot />
+			</div>
+			<Footer />
+		</div>
 {:else if path !== '/' && !path.includes('egghead-discord')}
 	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
 		<Nav>
 			<slot />
 		</Nav>
-		<div class="layout-main flex flex-col items-center jutify-center">
+		<div class="layout-main flex flex-col items-start jutify-start">
 			<slot />
 		</div>
 		<Footer />
@@ -42,7 +49,7 @@
 		<Footer />
 	</div>
 {:else}
-	<div class="layout-main flex flex-col items-center jutify-center h-screen">
+	<div class="layout-main flex flex-col items-start jutify-start h-screen">
 		<slot />
 	</div>
 {/if}
@@ -64,10 +71,11 @@
 
 	:global(.layout-main) {
 		grid-area: layout-main;
-		// display: flex;
-		// flex-direction: column;
-		justify-content: center;
-		align-items: center;
+		max-width: 100vw;
+	}
+	:global(.layout-creative) {
+		grid-area: layout-main;
+		max-width: 100vw;
 	}
 
 	.header {

@@ -12,7 +12,7 @@
 </script>
 
 {#if path.split('/').length > 2}
-	<div id="sketchLayout" class="w-full h-full">
+	<div id="sketchLayout" class="w-full max-w-screen h-full">
 		<SideNav class="sidebar">
 			<slot class="sidebar" />
 		</SideNav>
@@ -44,6 +44,7 @@
 		grid-template-columns: 10rem 1fr;
 		grid-template-areas: 'sidebar sketch';
 		max-height: calc(100vh - 5rem - 80px);
+		max-width: 100vw;
 	}
 	:global(.sketch) {
 		grid-area: sketch;
