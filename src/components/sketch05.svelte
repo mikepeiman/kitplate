@@ -14,10 +14,7 @@
 		radius: 0.33,
 		background: '#527A9B',
 		foreground: '#F4B9A7',
-		lineWidth: 20,
-		minDist: 20,
-		maxLines: 200,
-		speed: 1
+		lineWidth: 20
 	};
 
 	const settings = {
@@ -25,82 +22,21 @@
 		dimensions: [1280, 1280]
 	};
 	let c, ctx, w, h;
-
-	function getElementSizing() {
-		let sideNav = document.getElementById('sideNav');
-		let sideNavWidth = sideNav.offsetWidth;
-		console.log(`🚀 ~ file: sketch05.svelte ~ line 31 ~ onMount ~ sideNavWidth`, sideNavWidth);
-		let controlPanel = document.getElementById('controlPanel');
-		let controlPanelWidth = controlPanel.offsetWidth;
-		console.log(
-			`🚀 ~ file: sketch05.svelte ~ line 34 ~ onMount ~ controlPanelWidth`,
-			controlPanelWidth
-		);
-		let sketchLayout = document.getElementById('sketchLayout');
-		let sketchLayoutWidth = sketchLayout.offsetWidth;
-		console.log(
-			`🚀 ~ file: sketch05.svelte ~ line 37 ~ onMount ~ sketchLayoutWidth`,
-			sketchLayoutWidth
-		);
-		let canvasContainer = document.getElementById('canvasContainer');
-		let canvasContainerWidth = canvasContainer.offsetWidth;
-		console.log(
-			`🚀 ~ file: sketch05.svelte ~ line 47 ~ getElementSizing ~ canvasContainerWidth`,
-			canvasContainerWidth
-		);
-		let windowWidth = window.innerWidth;
-		let calculatedLayoutRemaining = sketchLayoutWidth - sideNavWidth - controlPanelWidth;
-		console.log(
-			`🚀 ~ file: sketch05.svelte ~ line 48 ~ getElementSizing ~ calculatedLayoutRemaining`,
-			calculatedLayoutRemaining
-		);
-		let calculatedWindowRemaining = windowWidth - sideNavWidth - controlPanelWidth;
-		console.log(
-			`🚀 ~ file: sketch05.svelte ~ line 50 ~ getElementSizing ~ calculatedWindowRemaining`,
-			calculatedWindowRemaining
-		);
-		console.log(
-			`🚀 ~ file: sketch05.svelte ~ line 49 ~ getElementSizing ~ windowWidth `,
-			windowWidth
-		);
-		return { calculatedLayoutRemaining, calculatedWindowRemaining };
-	}
 	onMount(() => {
-		let { calculatedLayoutRemaining, calculatedWindowRemaining } = getElementSizing();
 		c = document.getElementById('c');
-		let canvasContainer = document.getElementById('canvasContainer');
-		let canvasContainerWidth = canvasContainer.offsetWidth;
-		// w = c.width = window.innerWidth;
-		if (calculatedWindowRemaining < calculatedLayoutRemaining) {
-			w = c.width = canvasContainer.width = calculatedWindowRemaining;
-		} else if (canvasContainerWidth > calculatedLayoutRemaining) {
-			w = c.width = canvasContainerWidth;
-		} else {
-			w = c.width = calculatedLayoutRemaining;
-		}
-		h = c.height = sketchLayout.offsetHeight;
-		// ctx.width = window.innerWidth;
-		// ctx.height = window.innerHeight;
-		ctx = c.getContext('2d');
+		w = c.width = window.innerWidth;
+		(h = c.height = window.innerHeight), (ctx = c.getContext('2d'));
 		// starter.x = w / 2;
 		// starter.y = h / 2;
 		// setStartCoords();
 		console.log(`🚀 ~ file: sketch05.svelte ~ line 37 ~ w `, w);
 		console.log(`🚀 ~ file: sketch05.svelte ~ line 39 ~ h`, h);
 		window.addEventListener('resize', function () {
-			let { calculatedLayoutRemaining, calculatedWindowRemaining } = getElementSizing();
-			let canvasContainer = document.getElementById('canvasContainer');
-			let canvasContainerWidth = canvasContainer.offsetWidth;
-
-			if (calculatedWindowRemaining < calculatedLayoutRemaining) {
-				w = c.width = calculatedWindowRemaining;
-			} else if (canvasContainerWidth > calculatedLayoutRemaining) {
-				w = c.width = canvasContainerWidth;
-			} else {
-				w = c.width = calculatedLayoutRemaining;
-			}
-
-			h = c.height = sketchLayout.offsetHeight;
+			w = c.width = window.innerWidth;
+			h = c.height = window.innerHeight;
+			// starter.x = w / 2;
+			// starter.y = h / 2;
+			// setStartCoords();
 			init();
 		});
 		init();
@@ -175,14 +111,14 @@
 	}
 
 	function getColor(x, y, alphaFactor) {
-		// console.log(`🚀 ~ file: sketch05.svelte ~ line 117 ~ getColor ~ alphaFactor`, alphaFactor)
-		let finalFactor;
+        // console.log(`🚀 ~ file: sketch05.svelte ~ line 117 ~ getColor ~ alphaFactor`, alphaFactor)
+		let finalFactor
 		// finalFactor = y / h + frame * alphaFactor
-		finalFactor = alphaFactor - Math.floor(alphaFactor);
-		// console.log(`🚀 ~ file: sketch05.svelte ~ line 119 ~ getColor ~ finalFactor`, finalFactor)
+		finalFactor = alphaFactor - Math.floor(alphaFactor)
+        // console.log(`🚀 ~ file: sketch05.svelte ~ line 119 ~ getColor ~ finalFactor`, finalFactor)
 		// return 'hsl( hue, 80%, 50% )'.replace('hue', (x / w) * 360 + frame);
 		// return `hsla( ${((x / w) * 180 + frame + 5 * random.range(-1,1)) % 180 -  120}, 80%, 50%, ${y / h + frame * Math.random() * alphaFactor} )`;
-		return `hsla( ${(x / w) * 180 + frame - 120}, 80%, 50%, ${finalFactor} )`;
+		return `hsla( ${(x / w) * 180 + frame -  120}, 80%, 50%, ${finalFactor} )`;
 	}
 
 	function anim() {
@@ -216,8 +152,8 @@
 
 		++timeSinceLast;
 
-		if (lines.length < data.maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
-			// if (lines.length < data.maxLines) {
+		if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
+		// if (lines.length < maxLines) {
 			// && timesincelast > 10
 			timeSinceLast = 0;
 			setStartCoords();
@@ -252,8 +188,8 @@
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			this.dirIndex++;
 			// let dir = dirs[this.dirIndex % 6];
-			this.vx = dir[0] * data.speed * this.randomFactor;
-			this.vy = dir[1] * data.speed * this.randomFactor;
+			this.vx = dir[0] * speed * this.randomFactor;
+			this.vy = dir[1] * speed * this.randomFactor;
 			// if (this.x <= 0 || this.x >= w) {
 			// 	this.vx *= -1;
 			// }
@@ -265,14 +201,14 @@
 			(this.vx === parent.vx && this.vy === parent.vy)
 		);
 
-		// this.vx *= data.speed;
-		// this.vy *= data.speed;
+		// this.vx *= speed;
+		// this.vy *= speed;
 
 		// this.dist = Math.random() * (maxDist - minDist) + minDist;
-		this.lineDist = data.minDist;
+		this.lineDist = minDist;
 		this.hexDist = maxDist;
 
-		// this.lineDist = data.minDist * Math.random() * 10;
+		// this.lineDist = minDist * Math.random() * 10;
 		// this.hexDist = maxDist * Math.random() * 10;
 	}
 
@@ -298,8 +234,8 @@
 		this.x += this.vx;
 		this.y += this.vy;
 
-		this.lineDist -= 1 * data.speed * this.randomFactor;
-		this.hexDist -= 1 * data.speed * this.randomFactor;
+		this.lineDist -= 1 * speed * this.randomFactor;
+		this.hexDist -= 1 * speed * this.randomFactor;
 		// this.x = (this.x + w) % w;
 		// this.y = (this.y + h) % h;
 		// kill if out of screen
@@ -309,7 +245,7 @@
 		// make children :D
 		// if (this.dist <= 0 && this.width > initialWidth) {
 		if (this.lineDist <= 0) {
-			let dir;
+			let dir
 			// dir = dirs[(Math.random() * dirs.length) | 0];
 			// this.dirIndex ++
 			Math.random > 0.5 && this.dirIndex >= 1 ? this.dirIndex-- : this.dirIndex++;
@@ -319,22 +255,22 @@
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 245 ~ anim ~ this.dirIndex % 6`, this.dirIndex % 6)
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			// let newRand = random.range(0.5, 1.5);
-			// this.vx = dir[0]* data.speed * newRand;
-			// this.vy = dir[1]* data.speed * newRand;
-			this.vx = dir[0] * data.speed * this.randomFactor;
-			this.vy = dir[1] * data.speed * this.randomFactor;
-			// this.vx = dirs[this.dirx % dirs.length] * data.speed;
-			// this.vy = dirs[this.diry % dirs.length] * data.speed;
+			// this.vx = dir[0]* speed * newRand;
+			// this.vy = dir[1]* speed * newRand;
+			this.vx = dir[0] * speed * this.randomFactor;
+			this.vy = dir[1] * speed * this.randomFactor;
+			// this.vx = dirs[this.dirx % dirs.length] * speed;
+			// this.vy = dirs[this.diry % dirs.length] * speed;
 			// keep yo self, sometimes
-			// this.dist = Math.random() * (maxDist - data.minDist) + data.minDist;
-			// this.dist = random.range(data.minDist, maxDist) + data.minDist;
+			// this.dist = Math.random() * (maxDist - minDist) + minDist;
+			// this.dist = random.range(minDist, maxDist) + minDist;
 			// looking for consistent hexagons
-			// this.lineDist = data.minDist;
-			this.lineDist = data.minDist * Math.random() * 2;
+			// this.lineDist = minDist;
+			this.lineDist = (minDist * Math.random()) * 2;
 			// add 2 children
-			if (lines.length < data.maxLines) lines.push(new Line(this));
-			if (lines.length < data.maxLines * 2 && Math.random() < 0.5) lines.push(new Line(this));
-			// adjust first data.maxLines condition above 1 to create a pause in emitter while lines diminish
+			if (lines.length < maxLines) lines.push(new Line(this));
+			if (lines.length < maxLines * 2 && Math.random() < 0.5) lines.push(new Line(this));
+			// adjust first maxLines condition above 1 to create a pause in emitter while lines diminish
 
 			// kill the poor thing
 			// if (Math.random() < 0.5) dead = true;
@@ -349,7 +285,7 @@
 		// velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		//  velFactor = this.vx - this.vy * this.vx; // this one does up-right, minimal effect
 		//  velFactor = this.vx * this.vy * this.vy; // this one does bridges up left down, a bit messy?
-		this.width > maxWidth / 2 ? (velFactor = this.width / 5) : (velFactor = this.width * 5); // this is pretty slick, all angles used
+		this.width > maxWidth / 2 ? velFactor = this.width / 5 :velFactor = this.width * 5; // this is pretty slick, all angles used
 		// this.width += velFactor / 3;
 		// this.width += velFactor / 3;
 		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, this.randomFactor);
@@ -391,30 +327,16 @@
 	// };
 </script>
 
-<div class="flex h-full w-full sketch">
-	<div id="canvasContainer">
-		<canvas id="c" />
-	</div>
-	<div class="controls flex flex-col p-4" id="controlPanel">
-		<Slider
-			label="Min Distance"
-			bind:value={data.minDist}
-			min="1"
-			max="500"
-			step="5"
-			color="text-sky-400"
-		/>
-		<Slider label="Number of lines" bind:value={data.maxLines} min="1" max="1000" step="1" />
-		<Slider label="Speed" bind:value={data.speed} min="0.1" max="1000" step=".1" />
-	</div>
-</div>
+<canvas id="c" class="w-full h-full" />
 
-<style global lang="scss">
-	.sketch {
-		grid-area: sketch;
-	}
-
-	.controls {
-		grid-area: controls;
-	}
-</style>
+<!-- <CanvasSketchEditor {sketch} {settings} {data} {hidePanel}>
+	<ColorInput label='Background' bind:value={data.background} />
+	<ColorInput label='Foreground' bind:value={data.foreground} />
+	<Slider label='Arc Length' bind:value={data.arclen} />
+	<Slider label='Radius' bind:value={data.radius} />
+	<Slider label='Angle' bind:value={data.angle} min={-Math.PI} max={Math.PI} />
+	<Checkbox label='Outline' bind:checked={data.outline} />
+	{#if data.outline}
+		<Slider label='Line Width' bind:value={data.lineWidth} min=1 max=100 />
+	{/if}
+</CanvasSketchEditor> -->

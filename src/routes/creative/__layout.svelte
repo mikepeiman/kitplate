@@ -12,15 +12,11 @@
 </script>
 
 {#if path.split('/').length > 2}
-	<div id="sketch-layout" class="w-full h-full">
+	<div id="sketchLayout" class="w-full h-full">
 		<SideNav class="sidebar">
 			<slot class="sidebar" />
 		</SideNav>
-
-			<div class="sketch">
-				<slot />
-			</div>
-
+		<slot class="sketch" />
 	</div>
 {:else}
 	<div id="creative-layout">
@@ -42,14 +38,18 @@
 			'sidebar main';
 	}
 
-	:global(#sketch-layout) {
+	:global(#sketchLayout) {
 		display: grid;
 		grid-area: layout-main;
 		grid-template-columns: 10rem 1fr;
 		grid-template-areas: 'sidebar sketch';
+		max-height: calc(100vh - 5rem - 80px);
 	}
-	.sketch {
+	:global(.sketch) {
 		grid-area: sketch;
+		display: grid;
+		grid-template-areas: 'canvas controls';
+		grid-template-columns: 1fr minmax(10rem, 20rem);
 	}
 	.main {
 		justify-content: center;
