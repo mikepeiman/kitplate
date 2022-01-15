@@ -74,9 +74,9 @@
 		if (calculatedWindowRemaining < calculatedLayoutRemaining) {
 			w = c.width = canvasContainer.width = calculatedWindowRemaining;
 		} else if (canvasContainerWidth > calculatedLayoutRemaining) {
-			w = c.width = canvasContainerWidth;
-		} else {
 			w = c.width = calculatedLayoutRemaining;
+		} else {
+			w = c.width = canvasContainerWidth;
 		}
 		h = c.height = sketchLayout.offsetHeight;
 		// ctx.width = window.innerWidth;
@@ -93,12 +93,12 @@
 			let canvasContainerWidth = canvasContainer.offsetWidth;
 
 			if (calculatedWindowRemaining < calculatedLayoutRemaining) {
-				w = c.width = calculatedWindowRemaining;
-			} else if (canvasContainerWidth > calculatedLayoutRemaining) {
-				w = c.width = canvasContainerWidth;
-			} else {
-				w = c.width = calculatedLayoutRemaining;
-			}
+			w = c.width = canvasContainer.width = calculatedWindowRemaining;
+		} else if (canvasContainerWidth > calculatedLayoutRemaining) {
+			w = c.width = calculatedLayoutRemaining;
+		} else {
+			w = c.width = canvasContainerWidth;
+		}
 
 			h = c.height = sketchLayout.offsetHeight;
 			init();

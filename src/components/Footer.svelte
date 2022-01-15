@@ -27,6 +27,7 @@
         grid-template-areas:
         'logo social end';
         grid-template-columns: 1fr 10fr 1fr;
+        min-height: 80px;
     }
 
     .logo {

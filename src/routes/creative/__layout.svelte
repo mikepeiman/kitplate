@@ -43,14 +43,14 @@
 		grid-area: layout-main;
 		grid-template-columns: 10rem 1fr;
 		grid-template-areas: 'sidebar sketch';
-		max-height: calc(100vh - 5rem - 80px);
+		max-height: calc(100vh - 80px);
 		max-width: 100vw;
 	}
 	:global(.sketch) {
 		grid-area: sketch;
 		display: grid;
 		grid-template-areas: 'canvas controls';
-		grid-template-columns: 1fr minmax(10rem, 20rem);
+		grid-template-columns: 1fr minmax(15rem, 20rem);
 	}
 	.main {
 		justify-content: center;
