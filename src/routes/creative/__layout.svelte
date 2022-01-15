@@ -50,7 +50,7 @@
 		grid-area: sketch;
 		display: grid;
 		grid-template-areas: 'canvas controls';
-		grid-template-columns: 1fr minmax(15rem, 20rem);
+		grid-template-columns: 1fr minmax(20rem, 25rem);
 	}
 	.main {
 		justify-content: center;

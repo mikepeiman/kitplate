@@ -1,12 +1,12 @@
 <script>
 	export let hidePanel = false;
-	import CanvasSketchEditor from '$components/CanvasSketchEditor.svelte';
 	import Slider from '$components/Slider.svelte';
 	import ColorInput from '$components/ColorInput.svelte';
 	import Checkbox from '$components/Checkbox.svelte';
 	import { onMount } from 'svelte';
 	import random from 'canvas-sketch-util/random.js';
-	const data = {
+	import CanvasManager from '$components/CanvasManager.svelte';
+	$: data = {
 		TITLE: 'Sketch05',
 		outline: true,
 		arclen: 0.5,
@@ -93,12 +93,12 @@
 			let canvasContainerWidth = canvasContainer.offsetWidth;
 
 			if (calculatedWindowRemaining < calculatedLayoutRemaining) {
-			w = c.width = canvasContainer.width = calculatedWindowRemaining;
-		} else if (canvasContainerWidth > calculatedLayoutRemaining) {
-			w = c.width = calculatedLayoutRemaining;
-		} else {
-			w = c.width = canvasContainerWidth;
-		}
+				w = c.width = canvasContainer.width = calculatedWindowRemaining;
+			} else if (canvasContainerWidth > calculatedLayoutRemaining) {
+				w = c.width = calculatedLayoutRemaining;
+			} else {
+				w = c.width = canvasContainerWidth;
+			}
 
 			h = c.height = sketchLayout.offsetHeight;
 			init();
@@ -396,16 +396,22 @@
 		<canvas id="c" />
 	</div>
 	<div class="controls flex flex-col p-4" id="controlPanel">
-		<Slider
-			label="Min Distance"
-			bind:value={data.minDist}
-			min="1"
-			max="500"
-			step="5"
-			color="text-sky-400"
-		/>
-		<Slider label="Number of lines" bind:value={data.maxLines} min="1" max="1000" step="1" />
-		<Slider label="Speed" bind:value={data.speed} min="0.1" max="1000" step=".1" />
+		<CanvasManager {settings}{data} {hidePanel}>
+			<Slider
+				label="Min Distance"
+				bind:value={data.minDist}
+				min="1"
+				max="500"
+				step="5"
+				color="text-sky-400"
+				on:change={(e) => {
+					console.log(e.target.value);
+					init();
+				}}
+			/>
+			<Slider label="Number of lines" bind:value={data.maxLines} min="1" max="1000" step="1" />
+			<Slider label="Speed" bind:value={data.speed} min="0.1" max="1000" step=".1" />
+		</CanvasManager>
 	</div>
 </div>
 
