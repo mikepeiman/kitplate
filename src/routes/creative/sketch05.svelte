@@ -127,8 +127,8 @@
 
 	$: starter = {
 		// starting parent line, just a pseudo line
-		x: random.range(0, w),
-		y: random.range(0, h),
+		x: w/2,
+		y: h/2,
 		vx: 1,
 		vy: 0.5,
 		width: random.range(data.minWidth, data.maxWidth),
@@ -139,8 +139,22 @@
 
 	function setStartCoords() {
 		// Math.random() < 0.5 ? (starter.x = 0) : (starter.x = w);
-		starter.x = random.range(0, w);
-		starter.y = random.range(0, h);
+		// let modX = Math.random() * Math.floor(w / data.minDist) * data.minDist;
+		// let modY = Math.random() * Math.floor(h / data.minDist) * data.minDist;
+		// starter.x = modX
+		// starter.y = modY
+
+		let evenSpacingArrayX = [],
+			evenSpacingArrayY = [],
+			evenSpacingArray = [];
+		let evenX = Math.floor(w / data.minDist)
+		let evenY = Math.floor(h / data.minDist)
+		evenSpacingArrayX = Array.from(Array(evenX), (x, i) => i * data.minDist);
+		evenSpacingArrayY = Array.from(Array(evenY), (x, i) => i * data.minDist);
+		starter.x = random.pick(evenSpacingArrayX);
+			starter.y = random.pick(evenSpacingArrayY);
+		// starter.x = random.range(0, w);
+		// starter.y = random.range(0, h);
 		// starter.randomFactor = random.range(0.5, 1.5);
 		// starter.x = w / 2;
 		// starter.y = h / 2;
@@ -148,8 +162,11 @@
 
 	function init() {
 		lines.length = 0;
+
+        // console.log(`🚀 ~ file: sketch05.svelte ~ line 160 ~ init ~ evenSpacingArrayX`, evenSpacingArrayX)
 		for (let i = 0; i < data.initialLines; ++i) {
 			setStartCoords();
+
 			lines.push(new Line(starter));
 		}
 
@@ -248,28 +265,16 @@
 		this.randomFactor = random.range(0.1, 1);
 		do {
 			let dir = dirs[(Math.random() * dirs.length) | 0];
-			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			this.dirIndex++;
-			// let dir = dirs[this.dirIndex % 6];
 			// this.vx = dir[0] * data.speed * this.randomFactor;
 			// this.vy = dir[1] * data.speed * this.randomFactor;
 			this.vx = dir[0] * data.speed;
 			this.vy = dir[1] * data.speed;
-			// if (this.x <= 0 || this.x >= w) {
-			// 	this.vx *= -1;
-			// }
-			// if (this.y <= 0 || this.y >= h) {
-			// 	this.vy *= -1;
-			// }
 		} while (
 			(this.vx === -parent.vx && this.vy === -parent.vy) ||
 			(this.vx === parent.vx && this.vy === parent.vy)
 		);
 
-		// this.vx *= data.speed;
-		// this.vy *= data.speed;
-
-		// this.dist = Math.random() * (maxDist - minDist) + minDist;
 		this.lineDist = data.minDist;
 		this.hexDist = maxDist;
 
@@ -299,8 +304,8 @@
 		this.x += this.vx;
 		this.y += this.vy;
 
-		this.lineDist -= 1 * data.speed;
-		this.hexDist -= 1 * data.speed;
+		this.lineDist -= data.speed;
+		this.hexDist -=  data.speed;
 		// this.lineDist -= 1 * data.speed * this.randomFactor;
 		// this.hexDist -= 1 * data.speed * this.randomFactor;
 		// this.x = (this.x + w) % w;
@@ -361,6 +366,7 @@
 		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, velFactor);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
+        // console.log(`🚀 ~ file: sketch05.svelte ~ line 368 ~ anim ~ this.width`, this.width)
 		ctx.moveTo(this.x, this.y);
 		ctx.lineTo(prevX, prevY);
 		ctx.stroke();
@@ -415,7 +421,7 @@
 				color="text-sky-400"
 			/>
 			<Slider label="Number of lines" bind:value={data.maxLines} min="1" max="100" step="1" />
-			<Slider label="Speed" bind:value={data.speed} min="1" max="100" step="1" />
+			<Slider label="Speed" bind:value={data.speed} min=".1" max="10" step=".1" />
 			<Slider label="Maxdist Factor" bind:value={data.maxDistFactor} min="1" max="50" step="1" />
 			<Slider label="Min Width" bind:value={data.minWidth} min="1" max="100" step="1" />
 			<Slider label="Max Width" bind:value={data.maxWidth} min="1" max="100" step="1" />
