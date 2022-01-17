@@ -9,20 +9,23 @@
 	import CanvasManager from '$components/CanvasManager.svelte';
 	const data = {
 		TITLE: 'Sketch05',
-		fps: 3,
+		fps: 60,
 		minDist: 20,
 		maxDistFactor: 6,
 		initialLines: 0,
-		maxLines: 20,
-		speed: 1,
+		maxLines: 100,
+		speed: 3,
 		minWidth: 1,
-		maxWidth: 10,
+		maxWidth: 4,
+		lineBirthFactor: 0.25,
 		colorFunctions: [
 			{ value: 0, label: 'original' },
 			{ value: 1, label: '2' },
 			{ value: 2, label: '3' },
 			{ value: 3, label: '4' },
-			{ value: 4, label: '5' }
+			{ value: 4, label: '5' },
+			{ value: 5, label: '6' },
+			{ value: 6, label: '7' },
 		],
 		colorFunctionsIndex: 0
 	};
@@ -32,6 +35,7 @@
 		starter = {},
 		timeSinceLast = 0;
 
+		$: lines
 	const dirs = [
 		{ x: 1, y: 0, angle: 0 },
 		{ x: 0.5, y: 0.866, angle: 60 },
@@ -139,6 +143,7 @@
 		// starter.randomFactor = random.range(0.5, 1.5);
 		// starter.x = w / 2;
 		// starter.y = h / 2;
+		starter.dirIndex = Math.floor(random.range(0, 6));
 	}
 
 	function init() {
@@ -147,8 +152,9 @@
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 160 ~ init ~ evenSpacingArrayX`, evenSpacingArrayX)
 		for (let i = 0; i < data.initialLines; ++i) {
 			setStartCoords();
-			starter.dirIndex = Math.floor(random.range(0, 6));
-			lines.push(new Line(starter));
+			let line = new Line(starter);
+			line.colorFunction = random.pick(data.colorFunctions);
+			lines.push(line);
 		}
 
 		ctx.fillStyle = '#222';
@@ -156,11 +162,13 @@
 		ctx.lineCap = 'round';
 	}
 
-	function getColor(x, y, alphaFactor) {
+	function getColor(idx, x, y, alphaFactor) {
+		
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 117 ~ getColor ~ alphaFactor`, alphaFactor)
 		// let finalFactor;
 		// finalFactor = y / h + frame * alphaFactor
 		// finalFactor = alphaFactor - Math.floor(alphaFactor);
+		alphaFactor = 1;
 		const colorFunctions = [
 			`hsla( ${(x / w) * 360 + frame}, 80%, 50%, 0.5 )`,
 			`hsla( ${(x / w) * 180 + frame - 120}, 80%, 50%, ${
@@ -169,9 +177,15 @@
 			`hsla( ${(x / w) * 180 + frame - 120}, 80%, 50%, ${Math.cos(x) / Math.cos(y)} )`,
 			`hsla( ${(x / w) * 180 + frame - 120}, 80%, 50%, ${frame / 2 - Math.floor(frame / 2)} )`,
 			`hsla( ${(x / w) * 180 + frame - 120}, 80%, 50%, ${frame + 1 - (frame + 1) / frame} `,
-			`hsla( ${(x / w + y) * 180 + frame / 30}, 50%, 50%, ${alphaFactor} )`
+			`hsla( ${(x / w + y) * 180 + frame / 30}, 50%, 50%, ${alphaFactor} )`,
+			`hsla( ${(x / w + y / h) * frame}, 50%, 50%, ${alphaFactor} )`,
+			`hsla( ${(x / w + y / h) * frame}, 50%, 50%, ${alphaFactor} )`,
 		];
-		let thisColor = colorFunctions[data.colorFunctionsIndex];
+		let thisColor
+		// thisColor = random.pick(colorFunctions);
+		thisColor = colorFunctions[idx];
+        // console.log(`🚀 ~ file: sketch05.svelte ~ line 187 ~ getColor ~ line.colorFunction`, line.colorFunction)
+		// Math.random() > 0.5 ? thisColor = colorFunctions[data.colorFunctionsIndex] : thisColor = colorFunctions[(data.colorFunctionsIndex + 1) % colorFunctions.length];
 		return thisColor;
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 174 ~ getColor ~ thisColor`, thisColor)
 	}
@@ -185,7 +199,7 @@
 		++frame;
 		++logCounter;
 		if (logCounter > 1000) {
-			lines;
+
 			console.log(`🚀 ~ file: sketch05.svelte ~ line 191 ~ anim ~ lines`, lines);
 			logCounter = 0;
 		}
@@ -224,10 +238,11 @@
 			setStartCoords();
 			let line = new Line(starter);
 			line.dirIndex = Math.floor(random.range(0, 6));
+			line.colorFunction = random.pick(data.colorFunctions);
 			lines.push(line);
 
 			// cover the middle;
-			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y, Math.random());
+			ctx.fillStyle = ctx.shadowColor = getColor(line.colorFunction.value, starter.x, starter.y, Math.random());
 			ctx.beginPath();
 			// ctx.arc(starter.x, starter.y, data.minWidth / 4, 0, Math.PI * 2);
 			// ctx.fill();
@@ -238,10 +253,11 @@
 		this.x = parent.x | 0;
 		this.y = parent.y | 0;
 		// this.width = parent.width / 1.25;
-		this.width = parent.width;
+		this.width = parent.width | 1;
 		// this.width = random.range(data.minWidth, data.maxWidth);
 		this.reverse = false;
 		this.dirIndex = parent.dirIndex;
+		this.colorFunction = random.pick(data.colorFunctions);
 		this.randomFactor = random.range(0.1, 1);
 		do {
 			// Math.random() > 0.5 ? this.dirIndex++ : this.dirIndex--;
@@ -272,12 +288,15 @@
 	Line.prototype.bounce = function () {
 		if (this.x <= 0 || this.x >= w) {
 			this.vx *= -1;
-			this.vy *= -1;
 		}
 		if (this.y <= 0 || this.y >= h) {
-			this.vx *= -1;
 			this.vy *= -1;
 		}
+		this.dirIndex = (this.dirIndex + 3 )% 6
+        // this.x <= 0 ? this.x = this.vx : this.x;
+        // this.x >= w ? this.x = w - this.vx : this.x;
+        // this.y <= 0 ? this.y = this.vy : this.y;
+        // this.y >= h ? this.y = h - this.vy : this.y;
 	};
 	Line.prototype.step = function () {
 		let dead = false;
@@ -326,7 +345,7 @@
 			// add 2 children
 			if (lines.length < data.maxLines) lines.push(new Line(this));
 			// if (lines.length < data.maxLines && Math.random() < 0.5) lines.push(new Line(this));
-			if(Math.random() < .25){
+			if(Math.random() < data.lineBirthFactor){
 
 				lines.push(new Line(this));
 				// remove a random line from lines array
@@ -348,11 +367,11 @@
 		//  velFactor = this.vx < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		// velFactor = this.vy < 0.5 ? this.vx - this.vy : this.vy - this.vx;
 		//  velFactor = this.vx - this.vy * this.vx; // this one does up-right, minimal effect
-		//  velFactor = this.vx * this.vy * this.vy; // this one does bridges up left down, a bit messy?
-		this.width > data.maxWidth / 2 ? (velFactor = this.width / 5) : (velFactor = this.width * 5); // this is pretty slick, all angles used
+		 velFactor = this.vx * this.vy * this.vy; // this one does bridges up left down, a bit messy?
+		// this.width > data.maxWidth / 2 ? (velFactor = this.width / 5) : (velFactor = this.width * 5); // this is pretty slick, all angles used
 		// this.width += velFactor / 3;
 		// this.width += velFactor / 3;
-		ctx.strokeStyle = ctx.shadowColor = getColor(this.x, this.y, velFactor);
+		ctx.strokeStyle = ctx.shadowColor = getColor(this.colorFunction.value, this.x, this.y, velFactor);
 		ctx.beginPath();
 		ctx.lineWidth = this.width;
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 368 ~ anim ~ this.width`, this.width)
@@ -391,8 +410,9 @@
 				step="1"
 				color="text-sky-400"
 			/>
-			<Slider label="Number of lines" bind:value={data.maxLines} min="1" max="100" step="1" />
+			<Slider label="Number of lines" bind:value={data.maxLines} min="10" max="500" step="10" />
 			<Slider label="Speed" bind:value={data.speed} min=".1" max="100" step=".1" />
+			<Slider label="Line Birth" bind:value={data.lineBirthFactor} min=".1" max="1" step=".1" />
 			<Slider label="FPS" bind:value={data.fps} min="1" max="60" step="1" />
 			<Slider label="Maxdist Factor" bind:value={data.maxDistFactor} min="1" max="50" step="1" />
 			<Slider label="Min Width" bind:value={data.minWidth} min="1" max="100" step="1" />

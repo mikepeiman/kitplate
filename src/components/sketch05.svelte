@@ -81,7 +81,7 @@
 		y: random.range(0, h),
 		vx: 0,
 		vy: 0,
-		width: random.range(initialWidth, maxWidth),
+		width: data.minWidth,
 		reverse: false,
 		dirIndex: 3,
 		randomFactor: random.range(0.1, 1)
@@ -133,8 +133,7 @@
 
 		// console.log(`🚀 ~ file: sketch05.svelte ~ line 124 ~ anim ~ lines`, lines)
 		for (let i = 0; i < lines.length; ++i) {
-			// lines[i].bounce()
-			// lines[i].width *= 0.995;
+
 			lines[i].reverse ? (lines[i].width *= 0.998) : (lines[i].width *= 1.002);
 			// lines.splice(i, 1);
 			// --i;
@@ -152,8 +151,8 @@
 
 		++timeSinceLast;
 
-		if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
-		// if (lines.length < maxLines) {
+		// if (lines.length < maxLines && timeSinceLast > 10 && Math.random() < 0.5) {
+		if (lines.length < maxLines) {
 			// && timesincelast > 10
 			timeSinceLast = 0;
 			setStartCoords();
@@ -169,17 +168,17 @@
 			// cover the middle;
 			ctx.fillStyle = ctx.shadowColor = getColor(starter.x, starter.y, Math.random());
 			ctx.beginPath();
-			// ctx.arc(starter.x, starter.y, initialWidth / 4, 0, Math.PI * 2);
-			// ctx.fill();
+			ctx.arc(starter.x, starter.y, initialWidth / 4, 0, Math.PI * 2);
+			ctx.fill();
 		}
 	}
 
 	function Line(parent) {
 		this.x = parent.x | 0;
 		this.y = parent.y | 0;
-		// this.width = parent.width / 1.25;
-		// this.width = parent.width
-		this.width = random.range(initialWidth, maxWidth);
+		this.width = parent.width
+        this.reverse = parent.reverse
+		// this.width = random.range(initialWidth, maxWidth);
 		this.reverse = false;
 		this.dirIndex = parent.dirIndex + 1;
 		this.randomFactor = random.range(0.1, 1);
@@ -187,15 +186,16 @@
 			let dir = dirs[(Math.random() * dirs.length) | 0];
 			// console.log(`🚀 ~ file: sketch05.svelte ~ line 164 ~ Line ~ dir`, dir)
 			this.dirIndex++;
+            this.bounce()
 			// let dir = dirs[this.dirIndex % 6];
 			this.vx = dir[0] * speed * this.randomFactor;
 			this.vy = dir[1] * speed * this.randomFactor;
-			// if (this.x <= 0 || this.x >= w) {
-			// 	this.vx *= -1;
-			// }
-			// if (this.y <= 0 || this.y >= h) {
-			// 	this.vy *= -1;
-			// }
+			if (this.x <= 0 || this.x >= w) {
+				this.vx *= -1;
+			}
+			if (this.y <= 0 || this.y >= h) {
+				this.vy *= -1;
+			}
 		} while (
 			(this.vx === -parent.vx && this.vy === -parent.vy) ||
 			(this.vx === parent.vx && this.vy === parent.vy)
@@ -224,6 +224,10 @@
 		if (this.y <= 0 || this.y >= h) {
 			this.vy *= -1;
 		}
+        this.x <= 0 ? this.x = this.vx : this.x;
+        this.x >= w ? this.x = w - this.vx : this.x;
+        this.y <= 0 ? this.y = this.vy : this.y;
+        this.y >= h ? this.y = h - this.vy : this.y;
 	};
 	Line.prototype.step = function () {
 		let dead = false;
@@ -239,7 +243,8 @@
 		// this.x = (this.x + w) % w;
 		// this.y = (this.y + h) % h;
 		// kill if out of screen
-		if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.bounce();
+		// if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) 
+        this.bounce();
 		//  dead = true;
 
 		// make children :D
@@ -267,9 +272,10 @@
 			// looking for consistent hexagons
 			// this.lineDist = minDist;
 			this.lineDist = (minDist * Math.random()) * 2;
-			// add 2 children
+			
+            // add  children
 			if (lines.length < maxLines) lines.push(new Line(this));
-			if (lines.length < maxLines * 2 && Math.random() < 0.5) lines.push(new Line(this));
+			if (lines.length < maxLines && Math.random() < 0.5) lines.push(new Line(this));
 			// adjust first maxLines condition above 1 to create a pause in emitter while lines diminish
 
 			// kill the poor thing
