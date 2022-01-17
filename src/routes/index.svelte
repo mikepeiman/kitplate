@@ -32,8 +32,8 @@
 	let projects = [
 		{
 			name: 'MetaBrain.io',
-			url: '#',
-			tags: ['knowledge management app', 'GraphQL/DB', 'LMS'],
+			url: 'https://metabrain.vercel.app/',
+			tags: ['knowledge management', 'GraphDB', 'knowledge graph', 'LMS'],
 			desc: 'A knowledge tracking platform for life. Research, track, organize, curate, plan, analyze, schedule, do. One app to rule them all.',
 			component: false
 		},
