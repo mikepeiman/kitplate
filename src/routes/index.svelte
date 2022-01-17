@@ -223,7 +223,7 @@
 				class="view-more font-montserrat text-base xl:text-lg pr-4 relative flex flex-row transition text-amber-400/[0.75] hover:text-white"
 			>
 				<!-- -mb-3 xl:-mb-0 md:-mb-2  justify-end-->
-				<a href="/creative" class="view-more offset-4 pr-4 no-underline uppercase text-right"
+				<a href="/projects" class="view-more offset-4 pr-4 no-underline uppercase text-right"
 					>View more projects</a
 				>
 				<div class="icon-wrapper -top-[3px] xl:-top-[1px]">

@@ -19,31 +19,31 @@
 	<div class="">
 		<Footer textColor="text-gray-900" />
 	</div>
-<!-- {:else if path.includes('creative') && path.split('/').length > 2}
+	<!-- {:else if path.includes('creative') && path.split('/').length > 2}
 	<div class="layout-main flex flex-col items-center jutify-center">
 		<slot />
 	</div>
 	<Footer /> -->
 {:else if path.includes('creative')}
-		<div class="flex flex-col h-screen">
-			<div class="layout-creative flex flex-col h-full items-start jutify-start">
-				<slot />
-			</div>
-			<Footer />
+	<div class="flex flex-col h-screen">
+		<div class="layout-creative flex flex-col h-full items-start jutify-start">
+			<slot />
 		</div>
+		<Footer />
+	</div>
+{:else if path === '/' || path.includes('projects')}
+	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
+		<div class="layout-main flex flex-col -mt-20 items-center jutify-center">
+			<slot />
+		</div>
+		<Footer />
+	</div>
 {:else if path !== '/' && !path.includes('egghead-discord')}
 	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
 		<Nav>
 			<slot />
 		</Nav>
 		<div class="layout-main flex flex-col items-start jutify-start">
-			<slot />
-		</div>
-		<Footer />
-	</div>
-{:else if path === '/'}
-	<div id="app-layout" class="grid w-auto min-h-screen max-h-full bg-black transition">
-		<div class="layout-main flex flex-col -mt-20 items-center jutify-center">
 			<slot />
 		</div>
 		<Footer />
