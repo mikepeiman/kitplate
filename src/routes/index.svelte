@@ -32,21 +32,21 @@
 	let projects = [
 		{
 			name: 'MetaBrain.io',
-			url: './creative/sketch01',
+			url: '#',
 			tags: ['knowledge management app', 'GraphQL/DB', 'LMS'],
 			desc: 'A knowledge tracking platform for life. Research, track, organize, curate, plan, analyze, schedule, do. One app to rule them all.',
 			component: false
 		},
 		{
 			name: 'Super Tic-Tac-Toe',
-			url: './creative/sketch02',
+			url: 'https://super-tic-tac-toe.netlify.app/',
 			tags: ['Svelte/Sapper', 'game', '(S)CSS'],
 			desc: 'Inspired by pen-and-paper with my daughter. Tic-Tac-Toe on steroids. Choose an emoji, configure your gameboard and rules, and have at it with up to 8 players.',
 			component: false
 		},
 		{
 			name: 'Creative Coding',
-			url: './creative/sketch03',
+			url: './creative/sketch05',
 			tags: ['creative coding', 'generative art', 'javascript'],
 			desc: 'Fulfilling a lifelong passion for beauty, and exploring the relationships between form, movement and number.'
 			// component: Sketch03Preview
@@ -239,7 +239,7 @@
 		</div>
 		<div class="projects-group min-w-0 shrink  md:grid w-full flex flex-col mb-12">
 			{#each projects as project}
-				<a href={`/${project.url}`} class="project-card-link no-underline flex my-3 md:mx-3">
+				<a href={`${project.url}`} class="project-card-link no-underline flex my-3 md:mx-3" target="_blank">
 					<!-- make a 'projects' directory for these -->
 					<div
 						class="project-card card rounded-md transition-all  bg-gray-900 hover:bg-sky-800/[0.5] flex flex-col  md:flex-col-reverse md:justify-between lg:flex-col lg:justify-start p-5 lg:p-7 rounded-md  hover:-translate-x-2 md:hover:-translate-y-2 md:hover:translate-x-0"

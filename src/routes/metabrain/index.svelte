@@ -1,10 +1,10 @@
 <script>
+	import MBSearchBar from '$components/MBSearchBar.svelte';
 </script>
 
-<div
-	class="bg-electricindigo-500 bg-opacity-10 min-h-full min-w-full flex items-center justify-center"
+<div class="bg-electricindigo-500 bg-opacity-10 min-h-full min-w-full flex flex-col items-center justify-start"
 >
-	<div class="min-h-full ">MetaBrain.io</div>
+	<MBSearchBar />
 </div>
 
 <style lang="scss">

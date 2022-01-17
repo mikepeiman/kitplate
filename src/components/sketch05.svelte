@@ -123,7 +123,7 @@
 
 	function anim() {
 		window.requestAnimationFrame(anim);
-
+        ++intervalLogger
 		++frame;
 
 		ctx.shadowBlur = 0;
