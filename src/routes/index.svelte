@@ -32,7 +32,7 @@
 	let projects = [
 		{
 			name: 'MetaBrain.io',
-			url: 'https://metabrain.vercel.app/',
+			url: 'https://www.metabrain.io/',
 			tags: ['knowledge management', 'GraphDB', 'knowledge graph', 'LMS'],
 			desc: 'A knowledge tracking platform for life. Research, track, organize, curate, plan, analyze, schedule, do. One app to rule them all.',
 			component: false
@@ -46,7 +46,7 @@
 		},
 		{
 			name: 'Creative Coding',
-			url: './creative/sketch05',
+			url: 'https://www.domestika.org/en/projects/1340433-my-project-in-creative-coding-making-visuals-with-javascript-course',
 			tags: ['creative coding', 'generative art', 'javascript'],
 			desc: 'Fulfilling a lifelong passion for beauty, and exploring the relationships between form, movement and number.'
 			// component: Sketch03Preview
