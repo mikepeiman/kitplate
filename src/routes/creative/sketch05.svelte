@@ -18,6 +18,7 @@
 		minWidth: 1,
 		maxWidth: 4,
 		lineBirthFactor: 0.25,
+		randomColors: false,
 		colorFunctions: [
 			{ value: 0, label: 'original' },
 			{ value: 1, label: '2' },
@@ -183,7 +184,7 @@
 		];
 		let thisColor
 		// thisColor = random.pick(colorFunctions);
-		thisColor = colorFunctions[idx];
+		data.randomColors ? thisColor = colorFunctions[idx] : thisColor = colorFunctions[data.colorFunctionsIndex]
         // console.log(`🚀 ~ file: sketch05.svelte ~ line 187 ~ getColor ~ line.colorFunction`, line.colorFunction)
 		// Math.random() > 0.5 ? thisColor = colorFunctions[data.colorFunctionsIndex] : thisColor = colorFunctions[(data.colorFunctionsIndex + 1) % colorFunctions.length];
 		return thisColor;
@@ -405,18 +406,19 @@
 			<Slider
 				label="Min Distance"
 				bind:value={data.minDist}
-				min="1"
-				max="300"
-				step="1"
+				min="4"
+				max="1200"
+				step="4"
 				color="text-sky-400"
 			/>
 			<Slider label="Number of lines" bind:value={data.maxLines} min="10" max="500" step="10" />
-			<Slider label="Speed" bind:value={data.speed} min=".1" max="100" step=".1" />
+			<Slider label="Speed" bind:value={data.speed} min=".2" max="20" step=".2" />
 			<Slider label="Line Birth" bind:value={data.lineBirthFactor} min=".1" max="1" step=".1" />
 			<Slider label="FPS" bind:value={data.fps} min="1" max="60" step="1" />
 			<Slider label="Maxdist Factor" bind:value={data.maxDistFactor} min="1" max="50" step="1" />
 			<Slider label="Min Width" bind:value={data.minWidth} min="1" max="100" step="1" />
 			<Slider label="Max Width" bind:value={data.maxWidth} min="1" max="100" step="1" />
+			<Checkbox label="Random color functions?" bind:checked={data.randomColors} />
 			<OptionSelect items={data.colorFunctions} bind:selected={data.colorFunctionsIndex} />
 		</CanvasManager>
 	</div>
