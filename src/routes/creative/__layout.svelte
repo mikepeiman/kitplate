@@ -11,7 +11,7 @@
 	$: console.log(`🚀 ~ file: __layout.svelte ~ line 9 ~ params`, params);
 </script>
 
-{#if path.split('/').length > 2}
+<!-- {#if path.split('/').length > 2}
 	<div id="sketchLayout" class="w-full max-w-screen h-full">
 		<SideNav class="sidebar">
 			<slot class="sidebar" />
@@ -27,7 +27,13 @@
 			<slot />
 		</div>
 	</div>
-{/if}
+{/if} -->
+
+<div id="creative-layout" class="w-full h-full flex items-center justify-center">
+	<div class="flex w-auto h-full flex items-center justify-center">
+		<slot />
+	</div>
+</div>
 
 <style lang="scss">
 	:global(#creative-layout) {
